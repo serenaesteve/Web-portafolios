@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Portfolio - Portify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .chat-body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-main { flex: 1; display: flex; gap: 0; overflow: hidden; }
+
+        /* SIDEBAR */
+        .chat-sidebar { width: 280px; flex-shrink: 0; border-right: 1px solid rgba(234,222,222,.9); padding: 28px 22px; display: flex; flex-direction: column; gap: 18px; background: rgba(255,255,255,.5); overflow-y: auto; }
+        .sidebar-title { font-weight: 700; font-size: .95rem; color: #1f2937; margin-bottom: 4px; }
+        .sidebar-desc { color: #6b7280; font-size: .88rem; line-height: 1.6; }
+        .progress-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .progress-list li { display: flex; align-items: center; gap: 10px; font-size: .88rem; color: #6b7280; padding: 8px 12px; border-radius: 12px; transition: .2s; }
+        .progress-list li.done { color: #1f2937; font-weight: 600; }
+        .progress-list li.done .pstep { background: var(--gradient-main); color: white; }
+        .progress-list li.active { background: rgba(241,138,142,.08); color: #1f2937; }
+        .pstep { width: 24px; height: 24px; border-radius: 50%; background: #eadede; color: #6b7280; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+
+        /* CHAT */
+        .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 32px 28px; display: flex; flex-direction: column; gap: 18px; scroll-behavior: smooth; }
+        .msg { max-width: 75%; display: flex; flex-direction: column; gap: 4px; }
+        .msg.user { align-self: flex-end; align-items: flex-end; }
+        .msg.bot  { align-self: flex-start; align-items: flex-start; }
+        .msg-bubble { padding: 14px 18px; border-radius: 20px; line-height: 1.65; font-size: .97rem; white-space: pre-wrap; word-wrap: break-word; }
+        .msg.bot  .msg-bubble { background: rgba(255,255,255,.9); border: 1px solid rgba(234,222,222,.9); color: #1f2937; border-radius: 4px 20px 20px 20px; }
+        .msg.user .msg-bubble { background: var(--gradient-main); color: white; border-radius: 20px 4px 20px 20px; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient-main); display: flex; align-items: center; justify-content: center; font-size: .8rem; color: white; font-weight: 700; flex-shrink: 0; }
+        .msg-row { display: flex; align-items: flex-end; gap: 10px; }
+        .msg.user .msg-row { flex-direction: row-reverse; }
+
+        /* TYPING */
+        .typing .msg-bubble { padding: 14px 20px; }
+        .typing-dots { display: flex; gap: 5px; align-items: center; }
+        .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: #6b7280; animation: bounce .9s infinite; }
+        .typing-dots span:nth-child(2) { animation-delay: .15s; }
+        .typing-dots span:nth-child(3) { animation-delay: .3s; }
+        @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+        /* INPUT */
+        .chat-input-area { padding: 18px 28px; border-top: 1px solid rgba(234,222,222,.9); background: rgba(255,255,255,.7); backdrop-filter: blur(10px); }
+        .input-row { display: flex; gap: 12px; align-items: flex-end; }
+        .chat-input-area textarea { flex: 1; padding: 14px 18px; border-radius: 18px; border: 1px solid #eadede; font: inherit; font-size: .97rem; resize: none; min-height: 52px; max-height: 140px; outline: none; transition: .2s; background: white; }
+        .chat-input-area textarea:focus { border-color: #f18a8e; box-shadow: 0 0 0 3px rgba(241,138,142,.12); }
+        .send-btn { width: 52px; height: 52px; border-radius: 50%; border: none; background: var(--gradient-main); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: .2s; font-size: 1.1rem; }
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:disabled { opacity: .5; cursor: default; transform: none; }
+
+        /* READY PANEL */
+        .ready-panel { display: none; background: rgba(255,255,255,.95); border: 1px solid rgba(234,222,222,.96); border-radius: 24px; margin: 20px 28px; padding: 28px; text-align: center; box-shadow: 0 20px 60px rgba(31,41,55,.1); }
+        .ready-panel.show { display: block; animation: fadeUp .4s ease; }
+        .ready-panel h3 { font-size: 1.4rem; margin: 14px 0 10px; }
+        .ready-panel p { color: #6b7280; margin-bottom: 22px; }
+        .ready-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+        @media(max-width:768px) { .chat-sidebar{display:none} .chat-messages{padding:20px 16px} .chat-input-area{padding:14px 16px} }
+    </style>
+</head>
+<body class="chat-body">
+    <header class="site-header">
+        <div class="wrapper nav">
+            <a href="/" class="logo">Portify</a>
+            <div class="nav-actions">
+                <span style="color:#6b7280;font-size:.9rem">{{ user.nombre }}</span>
+                <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="chat-main">
+        <!-- Sidebar progreso -->
+        <aside class="chat-sidebar">
+            <div>
+                <p class="sidebar-title">Creando tu portfolio</p>
+                <p class="sidebar-desc">La IA te hará preguntas. Responde con detalle para obtener mejores resultados.</p>
+            </div>
+            <ul class="progress-list" id="progressList">
+                <li data-step="0"><div class="pstep">1</div> Nombre</li>
+                <li data-step="1"><div class="pstep">2</div> Rol</li>
+                <li data-step="2"><div class="pstep">3</div> Descripción</li>
+                <li data-step="3"><div class="pstep">4</div> Habilidades</li>
+                <li data-step="4"><div class="pstep">5</div> Proyectos</li>
+                <li data-step="5"><div class="pstep">6</div> Experiencia</li>
+                <li data-step="6"><div class="pstep">7</div> Contacto</li>
+                <li data-step="7"><div class="pstep">8</div> Estilo</li>
+                <li data-step="8"><div class="pstep">9</div> Tema</li>
+                <li data-step="9"><div class="pstep">10</div> Color</li>
+            </ul>
+        </aside>
+
+        <!-- Chat -->
+        <div class="chat-area">
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg bot">
+                    <div class="msg-row">
+                        <div class="msg-avatar">P</div>
+                        <div class="msg-bubble">¡Hola {{ user.nombre }}! 👋 Soy tu asistente de Portify. Voy a hacerte unas preguntas para crear tu portfolio profesional.
+
+¿Empezamos? ¿Cuál es tu <strong>nombre completo</strong>?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ready-panel" id="readyPanel">
+                <div style="font-size:2.5rem">🎉</div>
+                <h3>¡Portfolio listo para generar!</h3>
+                <p>Tengo toda la información. ¿Generamos tu portfolio ahora?</p>
+                <div class="ready-actions">
+                    <button class="btn btn-primary btn-large" id="generateBtn" onclick="generarPortfolio()">Generar mi portfolio</button>
+                    <button class="btn btn-secondary" onclick="seguirChatando()">Añadir más info</button>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-row">
+                    <textarea id="userInput" placeholder="Escribe tu respuesta..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    let pendingData = null;
+    let step = 0;
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    function addMsg(text, role) {
+        const c = document.getElementById('chatMessages');
+        const d = document.createElement('div');
+        d.className = `msg ${role}`;
+        const avatar = role === 'bot' ? 'P' : '{{ user.nombre[0].upper() }}';
+        d.innerHTML = `<div class="msg-row">
+            <div class="msg-avatar">${avatar}</div>
+            <div class="msg-bubble">${text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>
+        </div>`;
+        c.appendChild(d);
+        c.scrollTop = c.scrollHeight;
+        return d;
+    }
+
+    function addTyping() {
+        const c = document.getElementById('chatMessages');
+        const d = document.createElement('div');
+        d.className = 'msg bot typing';
+        d.id = 'typingIndicator';
+        d.innerHTML = `<div class="msg-row">
+            <div class="msg-avatar">P</div>
+            <div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+        </div>`;
+        c.appendChild(d);
+        c.scrollTop = c.scrollHeight;
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('typingIndicator');
+        if (t) t.remove();
+    }
+
+    function updateProgress() {
+        const items = document.querySelectorAll('#progressList li');
+        items.forEach((li, i) => {
+            li.classList.remove('done','active');
+            if (i < step) li.classList.add('done');
+            else if (i === step) li.classList.add('active');
+        });
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const btn   = document.getElementById('sendBtn');
+        const msg   = input.value.trim();
+        if (!msg) return;
+
+        addMsg(msg, 'user');
+        input.value = '';
+        input.style.height = 'auto';
+        btn.disabled = true;
+        addTyping();
+        step = Math.min(step + 1, 9);
+        updateProgress();
+
+        try {
+            const r = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({mensaje: msg})
+            });
+            const data = await r.json();
+            removeTyping();
+
+            if (data.error) { addMsg('⚠️ ' + data.error, 'bot'); return; }
+
+            if (data.listo) {
+                addMsg(data.respuesta, 'bot');
+                pendingData = data.datos;
+                document.getElementById('readyPanel').classList.add('show');
+                document.getElementById('chatMessages').scrollTop = 99999;
+                step = 10;
+                updateProgress();
+            } else {
+                addMsg(data.respuesta, 'bot');
+            }
+        } catch(e) {
+            removeTyping();
+            addMsg('⚠️ Error de conexión. Revisa que Flask esté corriendo.', 'bot');
+        } finally {
+            btn.disabled = false;
+            input.focus();
+        }
+    }
+
+    async function generarPortfolio() {
+        if (!pendingData) return;
+        const btn = document.getElementById('generateBtn');
+        btn.textContent = 'Generando...';
+        btn.disabled = true;
+        try {
+            const r = await fetch('/generar-portfolio', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({datos: pendingData})
+            });
+            const data = await r.json();
+            if (data.ok) {
+                window.location.href = `/portfolio/${data.portfolio_id}`;
+            }
+        } catch(e) {
+            btn.textContent = 'Error, intenta de nuevo';
+            btn.disabled = false;
+        }
+    }
+
+    function seguirChatando() {
+        document.getElementById('readyPanel').classList.remove('show');
+        document.getElementById('userInput').focus();
+        addMsg('Claro, cuéntame qué más quieres añadir o cambiar 😊', 'bot');
+    }
+
+    document.getElementById('userInput').focus();
+    updateProgress();
+    </script>
+</body>
+</html>

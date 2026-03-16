@@ -9,17 +9,15 @@
 <body>
     <header class="site-header">
         <div class="wrapper nav">
-            <div class="logo">Portify</div>
-
+            <a href="/" class="logo">Portify</a>
             <nav class="menu">
                 <a href="#como-funciona">Cómo funciona</a>
-                <a href="#plantillas">Plantillas</a>
+                <a href="#demos">Ejemplos</a>
                 <a href="#planes">Planes</a>
             </nav>
-
             <div class="nav-actions">
-                <a href="#" class="btn btn-ghost">Iniciar sesión</a>
-                <a href="/generator" class="btn btn-primary">Crear portfolio</a>
+                <a href="/login" class="btn btn-secondary">Entrar</a>
+                <a href="/registro" class="btn btn-primary">Empezar gratis</a>
             </div>
         </div>
     </header>
@@ -27,266 +25,124 @@
     <main>
         <section class="hero">
             <div class="wrapper hero-grid">
-                <div class="hero-text">
-                    <div class="tag">Generación inteligente de portfolios</div>
-                    <h1>Crea tu portfolio profesional escribiendo una sola idea</h1>
-                    <p class="hero-description">
-                        Describe tu estilo, tus proyectos y el tipo de perfil que quieres mostrar.
-                        Portify genera una propuesta visual moderna lista para enseñar.
-                    </p>
-
+                <div class="hero-text reveal">
+                    <span class="section-tag">IA conversacional · 100% local</span>
+                    <h1>Tu portfolio creado por IA en minutos</h1>
+                    <p class="hero-description">Responde unas preguntas y Portify genera automáticamente tu portfolio profesional. Sin formularios aburridos, sin código.</p>
                     <div class="hero-buttons">
-                        <a href="/generator" class="btn btn-primary btn-large">Empieza gratis</a>
-                        <a href="#planes" class="btn btn-secondary btn-large">Ver planes</a>
+                        <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio</a>
+                        <a href="#demos" class="btn btn-secondary btn-large">Ver ejemplos</a>
                     </div>
-
-                    <div class="hero-mini-stats">
-                        <div class="mini-card">
-                            <strong>3 estilos</strong>
-                            <span>Minimalista, moderno y creativo</span>
-                        </div>
-                        <div class="mini-card">
-                            <strong>Responsive</strong>
-                            <span>Diseño adaptado a móvil y escritorio</span>
-                        </div>
+                    <div class="hero-proof">
+                        <div class="proof-item"><strong>IA local con Ollama</strong><span>Sin enviar datos a terceros</span></div>
+                        <div class="proof-item"><strong>Descarga tu web</strong><span>HTML listo para publicar</span></div>
                     </div>
                 </div>
-
-                <div class="hero-visual">
-                    <div class="prompt-card">
-                        <span class="prompt-label">Prompt</span>
-                        <p>
-                            Quiero un portfolio moderno oscuro para desarrollador full stack,
-                            con proyectos, habilidades y contacto.
-                        </p>
+                <div class="hero-visual reveal delay-1">
+                    <div class="floating-prompt">
+                        <span>Chat IA</span>
+                        <p>¿Cuáles son tus 4-6 habilidades principales? 💡</p>
                     </div>
-
-                    <div class="mockup-card">
-                        <div class="mockup-topbar">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-
-                        <div class="mockup-content">
-                            <div class="mockup-left">
-                                <div class="mockup-badge">Disponible para trabajar</div>
-                                <h3>Alex Romero</h3>
-                                <p>Full Stack Developer</p>
-                                <div class="mockup-buttons">
-                                    <button>Ver proyectos</button>
-                                    <button class="light">Contacto</button>
+                    <div class="product-window">
+                        <div class="window-bar"><i></i><i></i><i></i></div>
+                        <div class="product-content">
+                            <div class="product-left">
+                                <span class="badge-live">Portfolio generado</span>
+                                <h3>Alex Martín</h3>
+                                <p>Desarrollador Frontend</p>
+                                <div class="mock-lines"><div></div><div class="short"></div></div>
+                                <div class="mock-buttons"><button>Proyectos</button><button class="alt">Contacto</button></div>
+                            </div>
+                            <div class="product-right">
+                                <div class="preview-card big"></div>
+                                <div class="preview-row">
+                                    <div class="preview-card small"></div>
+                                    <div class="preview-card small light"></div>
                                 </div>
                             </div>
-
-                            <div class="mockup-right">
-                                <div class="project-box"></div>
-                                <div class="project-box small"></div>
-                                <div class="project-box small"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="brands">
-            <div class="wrapper brands-row">
-                <span>Diseños modernos</span>
-                <span>Generación rápida</span>
-                <span>Portfolios responsive</span>
-                <span>Experiencia profesional</span>
+        <section class="trusted-bar">
+            <div class="wrapper trusted-row">
+                <span>Chat guiado</span><span>IA con Ollama</span><span>HTML descargable</span><span>100% privado</span>
             </div>
         </section>
 
-        <section class="features-section" id="como-funciona">
+        <section class="how-section" id="como-funciona">
             <div class="wrapper">
-                <div class="section-heading">
+                <div class="section-heading reveal">
                     <span class="section-tag">Cómo funciona</span>
-                    <h2>De una descripción a un portfolio visual en minutos</h2>
-                    <p>
-                        El usuario describe lo que quiere y la plataforma organiza secciones,
-                        estilo visual y propuesta de contenido automáticamente.
-                    </p>
+                    <h2>Tres pasos, un portfolio profesional</h2>
                 </div>
-
                 <div class="steps-grid">
-                    <article class="info-card">
-                        <div class="step-number">01</div>
-                        <h3>Describe tu estilo</h3>
-                        <p>
-                            Indica si quieres un portfolio moderno, minimalista, oscuro,
-                            creativo o profesional.
-                        </p>
-                    </article>
-
-                    <article class="info-card">
-                        <div class="step-number">02</div>
-                        <h3>Generamos la estructura</h3>
-                        <p>
-                            Creamos secciones como sobre mí, proyectos, habilidades,
-                            experiencia y contacto.
-                        </p>
-                    </article>
-
-                    <article class="info-card">
-                        <div class="step-number">03</div>
-                        <h3>Visualiza y personaliza</h3>
-                        <p>
-                            Obtén una vista previa lista para enseñar, editar y adaptar
-                            a tu perfil profesional.
-                        </p>
-                    </article>
+                    <article class="step-card reveal"><div class="step-index">01</div><h3>Regístrate</h3><p>Crea tu cuenta gratis en segundos. Sin tarjeta de crédito.</p></article>
+                    <article class="step-card reveal delay-1"><div class="step-index">02</div><h3>Chatea con la IA</h3><p>Responde las preguntas de nuestro asistente. Cuanto más detallas, mejor resultado.</p></article>
+                    <article class="step-card reveal delay-2"><div class="step-index">03</div><h3>Descarga tu web</h3><p>Obtén tu portfolio en HTML listo para subir a cualquier hosting.</p></article>
                 </div>
             </div>
         </section>
 
-        <section class="templates-section" id="plantillas">
+        <section class="demo-section" id="demos">
             <div class="wrapper">
-                <div class="section-heading">
-                    <span class="section-tag">Plantillas</span>
-                    <h2>Empieza con un estilo que encaje contigo</h2>
-                </div>
-
-                <div class="templates-grid">
-                    <article class="template-card">
-                        <div class="template-preview light-preview"></div>
-                        <h3>Minimalista</h3>
-                        <p>Limpio, elegante y centrado en el contenido.</p>
-                    </article>
-
-                    <article class="template-card featured-template">
-                        <div class="template-preview dark-preview"></div>
-                        <h3>Moderno oscuro</h3>
-                        <p>Visual potente, contraste fuerte y presencia profesional.</p>
-                    </article>
-
-                    <article class="template-card">
-                        <div class="template-preview gradient-preview"></div>
-                        <h3>Creativo</h3>
-                        <p>Más color, más personalidad y enfoque visual.</p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="benefits-section">
-            <div class="wrapper benefits-grid">
-                <div class="benefit-panel">
-                    <span class="section-tag">Ventajas</span>
-                    <h2>Todo lo necesario para destacar online</h2>
-                    <p>
-                        No necesitas maquetar desde cero. El sistema te ayuda a tener una
-                        base sólida que luego puedes mejorar.
-                    </p>
-                </div>
-
-                <div class="benefits-list">
-                    <article class="benefit-item">
-                        <h3>Diseño responsive</h3>
-                        <p>Tu portfolio se adapta a móvil, tablet y escritorio.</p>
-                    </article>
-
-                    <article class="benefit-item">
-                        <h3>Estructura profesional</h3>
-                        <p>Secciones claras para mostrar perfil, proyectos y contacto.</p>
-                    </article>
-
-                    <article class="benefit-item">
-                        <h3>Generación rápida</h3>
-                        <p>Escribe una idea y obtén una propuesta visual al instante.</p>
-                    </article>
-
-                    <article class="benefit-item">
-                        <h3>Base editable</h3>
-                        <p>Perfecto para seguir ampliando funciones en tu proyecto.</p>
-                    </article>
+                <div class="section-heading reveal"><span class="section-tag">Estilos</span><h2>Tres estilos para destacar</h2></div>
+                <div class="demo-grid">
+                    <article class="demo-card reveal"><div class="demo-preview preview-light"></div><h3>Minimalista</h3><p>Limpio y centrado en el contenido.</p></article>
+                    <article class="demo-card featured reveal delay-1"><div class="demo-preview preview-dark"></div><h3>Moderno oscuro</h3><p>Impacto visual y estética tecnológica.</p></article>
+                    <article class="demo-card reveal delay-2"><div class="demo-preview preview-creative"></div><h3>Creativo</h3><p>Color, personalidad y presencia propia.</p></article>
                 </div>
             </div>
         </section>
 
         <section class="pricing-section" id="planes">
             <div class="wrapper">
-                <div class="section-heading">
-                    <span class="section-tag">Planes</span>
-                    <h2>Elige el plan que mejor se adapta a tu perfil</h2>
-                    <p>Estos planes son demostrativos para tu proyecto y hacen que la web parezca un SaaS real.</p>
-                </div>
-
+                <div class="section-heading reveal"><span class="section-tag">Planes</span><h2>Elige tu plan</h2></div>
                 <div class="pricing-grid">
-                    <article class="price-card">
-                        <h3>Free</h3>
-                        <div class="price">0€</div>
-                        <p class="price-subtitle">Para empezar</p>
-                        <ul>
-                            <li>1 portfolio</li>
-                            <li>Plantillas básicas</li>
-                            <li>Vista previa</li>
-                            <li>Personalización limitada</li>
-                        </ul>
-                        <a href="/generator" class="btn btn-secondary price-btn">Probar ahora</a>
+                    <article class="price-card reveal">
+                        <h3>Free</h3><div class="price">0€</div><p class="price-sub">Para empezar</p>
+                        <ul><li>1 portfolio</li><li>Descarga HTML</li><li>3 estilos</li></ul>
+                        <a href="/registro" class="btn btn-secondary full-btn">Comenzar</a>
                     </article>
-
-                    <article class="price-card featured-price">
-                        <div class="badge-price">Más popular</div>
-                        <h3>Pro</h3>
-                        <div class="price">9€</div>
-                        <p class="price-subtitle">Para destacar</p>
-                        <ul>
-                            <li>5 portfolios</li>
-                            <li>Más estilos visuales</li>
-                            <li>Mejor personalización</li>
-                            <li>Guardado de proyectos</li>
-                        </ul>
-                        <a href="/generator" class="btn btn-primary price-btn">Elegir Pro</a>
+                    <article class="price-card featured-price reveal delay-1">
+                        <span class="price-badge">Más popular</span>
+                        <h3>Pro</h3><div class="price">9€</div><p class="price-sub">Para destacar</p>
+                        <ul><li>5 portfolios</li><li>Todos los estilos</li><li>Personalización avanzada</li></ul>
+                        <a href="/registro" class="btn btn-primary full-btn">Elegir Pro</a>
                     </article>
-
-                    <article class="price-card">
-                        <h3>Premium</h3>
-                        <div class="price">19€</div>
-                        <p class="price-subtitle">Para usuarios avanzados</p>
-                        <ul>
-                            <li>Portfolios ilimitados</li>
-                            <li>Exportación avanzada</li>
-                            <li>Diseños exclusivos</li>
-                            <li>Prioridad en novedades</li>
-                        </ul>
-                        <a href="/generator" class="btn btn-secondary price-btn">Elegir Premium</a>
+                    <article class="price-card reveal delay-2">
+                        <h3>Premium</h3><div class="price">19€</div><p class="price-sub">Sin límites</p>
+                        <ul><li>Portfolios ilimitados</li><li>Diseños exclusivos</li><li>Acceso prioritario</li></ul>
+                        <a href="/registro" class="btn btn-secondary full-btn">Elegir Premium</a>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="cta-section">
-            <div class="wrapper cta-box">
+        <section class="final-cta">
+            <div class="wrapper cta-box reveal">
                 <div>
                     <span class="section-tag">Empieza hoy</span>
-                    <h2>Tu portfolio profesional empieza con una sola frase</h2>
-                    <p>
-                        Convierte una idea simple en una presencia web mucho más potente y visual.
-                    </p>
+                    <h2>Tu portfolio profesional empieza con una conversación</h2>
+                    <p>Gratis, rápido y con IA local. Sin excusas.</p>
                 </div>
-
-                <a href="/generator" class="btn btn-primary btn-large">Generar mi portfolio</a>
+                <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio</a>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
         <div class="wrapper footer-row">
-            <div>
-                <strong>Portify</strong>
-                <p>Proyecto web para generación de portfolios.</p>
-            </div>
-
+            <div><strong>Portify</strong><p>Generador de portfolios con IA local.</p></div>
             <div class="footer-links">
                 <a href="#como-funciona">Cómo funciona</a>
-                <a href="#plantillas">Plantillas</a>
                 <a href="#planes">Planes</a>
+                <a href="/login">Entrar</a>
             </div>
         </div>
     </footer>
-
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

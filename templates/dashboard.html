@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Portify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .dash-main { padding: 52px 0 90px; }
+        .dash-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 40px; }
+        .dash-header h1 { font-size: 2rem; letter-spacing: -.05em; margin: 0; }
+        .plan-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: rgba(255,255,255,.88); border: 1px solid rgba(234,222,222,.96); font-weight: 600; font-size: .9rem; }
+        .plan-badge span { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--gradient-main); color: white; font-size: .8rem; }
+        .portfolios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; margin-bottom: 32px; }
+        .portfolio-card { background: rgba(255,255,255,.88); border: 1px solid rgba(234,222,222,.96); box-shadow: 0 20px 60px rgba(31,41,55,.08); border-radius: 24px; overflow: hidden; }
+        .pcard-thumb { height: 160px; background: var(--gradient-main); position: relative; }
+        .pcard-thumb span { position: absolute; bottom: 14px; left: 16px; background: rgba(0,0,0,.35); color: white; padding: 5px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; }
+        .pcard-body { padding: 20px; }
+        .pcard-body h3 { font-size: 1.05rem; margin: 0 0 6px; }
+        .pcard-body p { color: #6b7280; font-size: .88rem; margin: 0 0 16px; }
+        .pcard-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-sm { padding: 9px 16px; font-size: .88rem; }
+        .empty-state { text-align: center; padding: 72px 24px; background: rgba(255,255,255,.6); border: 2px dashed rgba(234,222,222,.9); border-radius: 28px; }
+        .empty-state h2 { margin: 20px 0 10px; font-size: 1.5rem; }
+        .empty-state p { color: #6b7280; margin-bottom: 28px; }
+        .limit-bar { background: rgba(255,255,255,.7); border: 1px solid rgba(234,222,222,.9); border-radius: 16px; padding: 16px 20px; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; }
+        .limit-bar p { margin: 0; color: #6b7280; font-size: .92rem; }
+        .limit-track { flex: 1; height: 8px; background: #eadede; border-radius: 999px; overflow: hidden; }
+        .limit-fill { height: 100%; background: var(--gradient-main); border-radius: 999px; transition: width .5s ease; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrapper nav">
+            <a href="/" class="logo">Portify</a>
+            <nav class="menu">
+                <a href="/dashboard">Mis portfolios</a>
+                <a href="/planes">Planes</a>
+            </nav>
+            <div class="nav-actions">
+                <span style="color:#6b7280;font-size:.9rem">{{ user.nombre }}</span>
+                <a href="/logout" class="btn btn-secondary">Salir</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dash-main">
+        <div class="wrapper">
+            {% if error %}
+            <div class="error-box" style="margin-bottom:24px">{{ error }} <a href="/planes" style="color:#e06a7c;font-weight:700">Ver planes →</a></div>
+            {% endif %}
+
+            <div class="dash-header">
+                <div>
+                    <h1>Mis portfolios</h1>
+                    <div class="plan-badge" style="margin-top:10px">
+                        Plan actual <span>{{ plan.nombre }}</span>
+                    </div>
+                </div>
+                {% set count = portfolios|length %}
+                {% if count < plan.max %}
+                <a href="/chat" class="btn btn-primary">+ Nuevo portfolio</a>
+                {% else %}
+                <a href="/planes" class="btn btn-primary">Actualizar plan</a>
+                {% endif %}
+            </div>
+
+            {% set count = portfolios|length %}
+            <div class="limit-bar">
+                <p>{{ count }} de {{ plan.max if plan.max < 999 else '∞' }} portfolios usados</p>
+                <div class="limit-track">
+                    <div class="limit-fill" style="width: {{ [((count / plan.max) * 100) if plan.max < 999 else 0, 100]|min }}%"></div>
+                </div>
+                {% if count >= plan.max and plan.max < 999 %}
+                <a href="/planes" class="btn btn-primary btn-sm">Mejorar</a>
+                {% endif %}
+            </div>
+
+            {% if portfolios %}
+            <div class="portfolios-grid">
+                {% for p in portfolios %}
+                <div class="portfolio-card">
+                    <div class="pcard-thumb">
+                        <span>{{ p.creado_en[:10] }}</span>
+                    </div>
+                    <div class="pcard-body">
+                        <h3>{{ p.titulo }}</h3>
+                        <p>Creado el {{ p.creado_en[:10] }}</p>
+                        <div class="pcard-actions">
+                            <a href="/portfolio/{{ p.id }}" target="_blank" class="btn btn-primary btn-sm">Ver</a>
+                            <a href="/portfolio/{{ p.id }}/descargar" class="btn btn-secondary btn-sm">Descargar</a>
+                            <form action="/portfolio/{{ p.id }}/eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este portfolio?')">
+                                <button type="submit" class="btn btn-secondary btn-sm" style="color:#e06a7c">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div style="font-size:3rem">✨</div>
+                <h2>Aún no tienes portfolios</h2>
+                <p>Chatea con la IA y crea tu primer portfolio en minutos.</p>
+                <a href="/chat" class="btn btn-primary btn-large">Crear mi primer portfolio</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

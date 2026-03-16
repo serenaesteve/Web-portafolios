@@ -6,7 +6,7 @@
     <title>Generador - Portify</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="generator-page">
+<body class="generator-body">
     <header class="site-header">
         <div class="wrapper nav">
             <a href="/" class="logo">Portify</a>
@@ -14,6 +14,7 @@
             <nav class="menu">
                 <a href="/">Inicio</a>
                 <a href="/#planes">Planes</a>
+                <a href="/#faq">FAQ</a>
             </nav>
 
             <div class="nav-actions">
@@ -24,12 +25,12 @@
 
     <main class="generator-main">
         <div class="wrapper generator-layout">
-            <section class="generator-panel">
+            <section class="generator-box reveal">
                 <span class="section-tag">Generador</span>
-                <h1>Describe cómo quieres tu portfolio</h1>
+                <h1>Crea una propuesta visual de tu portfolio</h1>
                 <p>
-                    Cuanto más específico seas, mejor quedará la propuesta. Puedes pedir estilo,
-                    tono, secciones y tipo de perfil.
+                    Describe el tipo de portfolio que quieres generar. Puedes indicar tu perfil,
+                    estilo visual, tono y secciones.
                 </p>
 
                 {% if error %}
@@ -37,39 +38,71 @@
                 {% endif %}
 
                 <form action="/generar" method="POST" class="generator-form">
-                    <label for="nombre">Tu nombre</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Alejandro Martín" required>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Alejandro Martín">
 
                     <label for="prompt">Descripción</label>
-                    <textarea id="prompt" name="prompt" placeholder="Ejemplo: Quiero un portfolio moderno oscuro para desarrollador full stack, con proyectos, habilidades, experiencia y contacto." required></textarea>
+                    <textarea id="prompt" name="prompt" placeholder="Ejemplo: Quiero un portfolio moderno oscuro para estudiante de DAM con proyectos, habilidades, experiencia y contacto." required></textarea>
 
-                    <button type="submit" class="btn btn-primary btn-large full-width">
-                        Generar portfolio
-                    </button>
+                    <div class="form-grid">
+                        <div>
+                            <label for="estilo">Estilo</label>
+                            <select id="estilo" name="estilo">
+                                <option value="auto">Automático</option>
+                                <option value="moderno">Moderno</option>
+                                <option value="minimalista">Minimalista</option>
+                                <option value="creativo">Creativo</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="tema">Tema</label>
+                            <select id="tema" name="tema">
+                                <option value="auto">Automático</option>
+                                <option value="claro">Claro</option>
+                                <option value="oscuro">Oscuro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label for="color">Color principal</label>
+                    <select id="color" name="color">
+                        <option value="auto">Automático</option>
+				<option value="#F18A8E">Coral</option>
+				<option value="#E06A7C">Rosa frambuesa</option>
+				<option value="#6B5A7A">Morado grisáceo</option>
+				<option value="#3E627F">Azul petróleo</option>
+				<option value="#F2B38C">Melocotón</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-large full-btn">Generar portfolio</button>
                 </form>
             </section>
 
-            <aside class="generator-help">
-                <div class="help-card">
+            <aside class="generator-side reveal delay-1">
+                <div class="side-card">
                     <h3>Ideas de prompt</h3>
-                    <ul>
-                        <li>Portfolio minimalista claro para diseñador UX con proyectos y contacto.</li>
-                        <li>Portfolio moderno oscuro para programador full stack con skills y experiencia.</li>
-                        <li>Portfolio creativo con colores suaves para estudiante de DAM.</li>
-                    </ul>
+                    <div class="prompt-suggestions">
+                        <button type="button" class="prompt-chip">Portfolio moderno para frontend con proyectos y contacto</button>
+                        <button type="button" class="prompt-chip">Portfolio minimalista para diseñador UX con trabajos y bio</button>
+                        <button type="button" class="prompt-chip">Portfolio oscuro para estudiante de DAM con experiencia y habilidades</button>
+                    </div>
                 </div>
 
-                <div class="help-card">
-                    <h3>Qué puede detectar</h3>
+                <div class="side-card">
+                    <h3>Qué detecta el sistema</h3>
                     <ul>
-                        <li>Estilo visual</li>
+                        <li>Perfil profesional</li>
+                        <li>Secciones necesarias</li>
                         <li>Tema claro u oscuro</li>
-                        <li>Secciones principales</li>
-                        <li>Tipo de perfil profesional</li>
+                        <li>Estilo visual base</li>
+                        <li>Skills y proyectos de ejemplo</li>
                     </ul>
                 </div>
             </aside>
         </div>
     </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

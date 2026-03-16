@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planes - Portify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .planes-main { padding: 60px 0 90px; }
+        .current-plan { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: rgba(255,255,255,.88); border: 1px solid rgba(234,222,222,.96); font-size: .9rem; margin-bottom: 40px; }
+        .current-plan strong { color: #e06a7c; }
+        .price-card ul { list-style: none; padding: 0; margin: 14px 0 22px; display: flex; flex-direction: column; gap: 10px; }
+        .price-card ul li { color: #6b7280; font-size: .95rem; display: flex; align-items: center; gap: 8px; }
+        .price-card ul li::before { content: '✓'; color: #f18a8e; font-weight: 700; }
+        .price { font-size: 2.8rem; font-weight: 800; letter-spacing: -.05em; margin: 8px 0 2px; }
+        .price-sub { color: #6b7280; font-size: .9rem; margin-bottom: 18px; }
+        .price-badge { display: inline-flex; padding: 5px 12px; border-radius: 999px; background: var(--gradient-main); color: white; font-size: .8rem; font-weight: 700; margin-bottom: 12px; }
+        .featured-price { border: 2px solid #f18a8e !important; transform: scale(1.02); }
+        .active-plan { border: 2px solid #6b5a7a !important; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrapper nav">
+            <a href="/" class="logo">Portify</a>
+            <nav class="menu"><a href="/dashboard">Dashboard</a></nav>
+            <div class="nav-actions">
+                <span style="color:#6b7280;font-size:.9rem">{{ user.nombre }}</span>
+                <a href="/logout" class="btn btn-secondary">Salir</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="planes-main">
+        <div class="wrapper">
+            <div class="section-heading reveal">
+                <span class="section-tag">Planes</span>
+                <h2>Elige tu plan</h2>
+                <p>Actualiza para crear más portfolios y acceder a funciones exclusivas.</p>
+            </div>
+
+            <div style="text-align:center;margin-bottom:32px">
+                <span class="current-plan">Plan actual: <strong>{{ user.plan|capitalize }}</strong></span>
+            </div>
+
+            <div class="pricing-grid">
+                {% for key, plan in planes.items() %}
+                <article class="price-card reveal {% if key == user.plan %}active-plan{% endif %} {% if key == 'pro' %}featured-price{% endif %}">
+                    {% if key == 'pro' %}<span class="price-badge">Más popular</span>{% endif %}
+                    <h3>{{ plan.nombre }}</h3>
+                    <div class="price">{{ plan.precio }}€</div>
+                    <p class="price-sub">{% if key=='free' %}Para empezar{% elif key=='pro' %}Para destacar{% else %}Sin límites{% endif %}</p>
+                    <ul>
+                        <li>{{ plan.max if plan.max < 999 else '∞' }} portfolio{% if plan.max != 1 %}s{% endif %}</li>
+                        {% if key != 'free' %}<li>Más estilos visuales</li>{% endif %}
+                        {% if key == 'premium' %}<li>Acceso prioritario</li><li>Soporte directo</li>{% endif %}
+                        <li>Descarga HTML</li>
+                    </ul>
+                    {% if key == user.plan %}
+                    <button class="btn btn-secondary full-btn" disabled>Plan actual</button>
+                    {% else %}
+                    <a href="/activar-plan/{{ key }}" class="btn {% if key=='pro' %}btn-primary{% else %}btn-secondary{% endif %} full-btn"
+                       onclick="return confirm('¿Cambiar al plan {{ plan.nombre }}? (Demo: sin pago real)')">
+                        {% if plan.precio == 0 %}Bajar a Free{% else %}Activar {{ plan.nombre }}{% endif %}
+                    </a>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+
+            <p style="text-align:center;color:#6b7280;margin-top:28px;font-size:.88rem">
+                ⚠️ Los pagos son demostrativos. En producción se integraría Stripe o similar.
+            </p>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
