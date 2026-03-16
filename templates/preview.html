@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="preview-body {{ portfolio.tema }}">
+    <header class="preview-header">
+        <div class="wrapper preview-nav">
+            <div class="logo">Portify Preview</div>
+            <div class="preview-actions">
+                <a href="/generator" class="btn btn-secondary">Volver al generador</a>
+                <a href="/" class="btn btn-primary">Inicio</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="portfolio-preview">
+        <section class="portfolio-hero">
+            <div class="wrapper portfolio-hero-grid">
+                <div>
+                    <span class="portfolio-badge">{{ portfolio.estilo|capitalize }} · {{ portfolio.tema|capitalize }}</span>
+                    <h1>{{ portfolio.hero_nombre }}</h1>
+                    <h2>{{ portfolio.subtitulo }}</h2>
+                    <p>{{ portfolio.descripcion }}</p>
+
+                    <div class="portfolio-hero-buttons">
+                        <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
+                        <a href="#contacto" class="btn btn-secondary">Contacto</a>
+                    </div>
+                </div>
+
+                <div class="portfolio-side-card">
+                    <div class="side-line"></div>
+                    <div class="side-line short"></div>
+                    <div class="skills-mini">
+                        {% for skill in portfolio.habilidades[:4] %}
+                            <span>{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if "Sobre mí" in portfolio.secciones %}
+        <section class="portfolio-section">
+            <div class="wrapper">
+                <h3>Sobre mí</h3>
+                <p class="section-text">
+                    Profesional enfocado en crear soluciones web modernas, visuales y funcionales.
+                    Este portfolio ha sido generado automáticamente a partir de una descripción inicial.
+                </p>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if "Proyectos" in portfolio.secciones %}
+        <section class="portfolio-section" id="proyectos">
+            <div class="wrapper">
+                <h3>Proyectos</h3>
+                <div class="projects-grid">
+                    {% for proyecto in portfolio.proyectos %}
+                    <article class="project-card">
+                        <div class="project-image"></div>
+                        <h4>{{ proyecto.titulo }}</h4>
+                        <p>{{ proyecto.descripcion }}</p>
+                        <span class="tech-pill">{{ proyecto.tecnologias }}</span>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if "Habilidades" in portfolio.secciones %}
+        <section class="portfolio-section">
+            <div class="wrapper">
+                <h3>Habilidades</h3>
+                <div class="skills-list">
+                    {% for habilidad in portfolio.habilidades %}
+                        <span class="skill-pill">{{ habilidad }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if "Experiencia" in portfolio.secciones %}
+        <section class="portfolio-section">
+            <div class="wrapper">
+                <h3>Experiencia</h3>
+                <div class="experience-card">
+                    <strong>Prácticas / proyectos académicos</strong>
+                    <p>
+                        Participación en desarrollo de interfaces web, estructura de bases de datos
+                        y construcción de aplicaciones con backend y frontend conectados.
+                    </p>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if "Contacto" in portfolio.secciones %}
+        <section class="portfolio-section" id="contacto">
+            <div class="wrapper">
+                <h3>Contacto</h3>
+                <div class="contact-box">
+                    <p>¿Te interesa trabajar conmigo o saber más sobre mis proyectos?</p>
+                    <a href="mailto:correo@ejemplo.com" class="btn btn-primary">Enviar email</a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>

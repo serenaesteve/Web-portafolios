@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portify - Crea tu portfolio con IA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrapper nav">
+            <div class="logo">Portify</div>
+
+            <nav class="menu">
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#plantillas">Plantillas</a>
+                <a href="#planes">Planes</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="#" class="btn btn-ghost">Iniciar sesión</a>
+                <a href="/generator" class="btn btn-primary">Crear portfolio</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="wrapper hero-grid">
+                <div class="hero-text">
+                    <div class="tag">Generación inteligente de portfolios</div>
+                    <h1>Crea tu portfolio profesional escribiendo una sola idea</h1>
+                    <p class="hero-description">
+                        Describe tu estilo, tus proyectos y el tipo de perfil que quieres mostrar.
+                        Portify genera una propuesta visual moderna lista para enseñar.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="/generator" class="btn btn-primary btn-large">Empieza gratis</a>
+                        <a href="#planes" class="btn btn-secondary btn-large">Ver planes</a>
+                    </div>
+
+                    <div class="hero-mini-stats">
+                        <div class="mini-card">
+                            <strong>3 estilos</strong>
+                            <span>Minimalista, moderno y creativo</span>
+                        </div>
+                        <div class="mini-card">
+                            <strong>Responsive</strong>
+                            <span>Diseño adaptado a móvil y escritorio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="prompt-card">
+                        <span class="prompt-label">Prompt</span>
+                        <p>
+                            Quiero un portfolio moderno oscuro para desarrollador full stack,
+                            con proyectos, habilidades y contacto.
+                        </p>
+                    </div>
+
+                    <div class="mockup-card">
+                        <div class="mockup-topbar">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <div class="mockup-content">
+                            <div class="mockup-left">
+                                <div class="mockup-badge">Disponible para trabajar</div>
+                                <h3>Alex Romero</h3>
+                                <p>Full Stack Developer</p>
+                                <div class="mockup-buttons">
+                                    <button>Ver proyectos</button>
+                                    <button class="light">Contacto</button>
+                                </div>
+                            </div>
+
+                            <div class="mockup-right">
+                                <div class="project-box"></div>
+                                <div class="project-box small"></div>
+                                <div class="project-box small"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="brands">
+            <div class="wrapper brands-row">
+                <span>Diseños modernos</span>
+                <span>Generación rápida</span>
+                <span>Portfolios responsive</span>
+                <span>Experiencia profesional</span>
+            </div>
+        </section>
+
+        <section class="features-section" id="como-funciona">
+            <div class="wrapper">
+                <div class="section-heading">
+                    <span class="section-tag">Cómo funciona</span>
+                    <h2>De una descripción a un portfolio visual en minutos</h2>
+                    <p>
+                        El usuario describe lo que quiere y la plataforma organiza secciones,
+                        estilo visual y propuesta de contenido automáticamente.
+                    </p>
+                </div>
+
+                <div class="steps-grid">
+                    <article class="info-card">
+                        <div class="step-number">01</div>
+                        <h3>Describe tu estilo</h3>
+                        <p>
+                            Indica si quieres un portfolio moderno, minimalista, oscuro,
+                            creativo o profesional.
+                        </p>
+                    </article>
+
+                    <article class="info-card">
+                        <div class="step-number">02</div>
+                        <h3>Generamos la estructura</h3>
+                        <p>
+                            Creamos secciones como sobre mí, proyectos, habilidades,
+                            experiencia y contacto.
+                        </p>
+                    </article>
+
+                    <article class="info-card">
+                        <div class="step-number">03</div>
+                        <h3>Visualiza y personaliza</h3>
+                        <p>
+                            Obtén una vista previa lista para enseñar, editar y adaptar
+                            a tu perfil profesional.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="templates-section" id="plantillas">
+            <div class="wrapper">
+                <div class="section-heading">
+                    <span class="section-tag">Plantillas</span>
+                    <h2>Empieza con un estilo que encaje contigo</h2>
+                </div>
+
+                <div class="templates-grid">
+                    <article class="template-card">
+                        <div class="template-preview light-preview"></div>
+                        <h3>Minimalista</h3>
+                        <p>Limpio, elegante y centrado en el contenido.</p>
+                    </article>
+
+                    <article class="template-card featured-template">
+                        <div class="template-preview dark-preview"></div>
+                        <h3>Moderno oscuro</h3>
+                        <p>Visual potente, contraste fuerte y presencia profesional.</p>
+                    </article>
+
+                    <article class="template-card">
+                        <div class="template-preview gradient-preview"></div>
+                        <h3>Creativo</h3>
+                        <p>Más color, más personalidad y enfoque visual.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits-section">
+            <div class="wrapper benefits-grid">
+                <div class="benefit-panel">
+                    <span class="section-tag">Ventajas</span>
+                    <h2>Todo lo necesario para destacar online</h2>
+                    <p>
+                        No necesitas maquetar desde cero. El sistema te ayuda a tener una
+                        base sólida que luego puedes mejorar.
+                    </p>
+                </div>
+
+                <div class="benefits-list">
+                    <article class="benefit-item">
+                        <h3>Diseño responsive</h3>
+                        <p>Tu portfolio se adapta a móvil, tablet y escritorio.</p>
+                    </article>
+
+                    <article class="benefit-item">
+                        <h3>Estructura profesional</h3>
+                        <p>Secciones claras para mostrar perfil, proyectos y contacto.</p>
+                    </article>
+
+                    <article class="benefit-item">
+                        <h3>Generación rápida</h3>
+                        <p>Escribe una idea y obtén una propuesta visual al instante.</p>
+                    </article>
+
+                    <article class="benefit-item">
+                        <h3>Base editable</h3>
+                        <p>Perfecto para seguir ampliando funciones en tu proyecto.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing-section" id="planes">
+            <div class="wrapper">
+                <div class="section-heading">
+                    <span class="section-tag">Planes</span>
+                    <h2>Elige el plan que mejor se adapta a tu perfil</h2>
+                    <p>Estos planes son demostrativos para tu proyecto y hacen que la web parezca un SaaS real.</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <article class="price-card">
+                        <h3>Free</h3>
+                        <div class="price">0€</div>
+                        <p class="price-subtitle">Para empezar</p>
+                        <ul>
+                            <li>1 portfolio</li>
+                            <li>Plantillas básicas</li>
+                            <li>Vista previa</li>
+                            <li>Personalización limitada</li>
+                        </ul>
+                        <a href="/generator" class="btn btn-secondary price-btn">Probar ahora</a>
+                    </article>
+
+                    <article class="price-card featured-price">
+                        <div class="badge-price">Más popular</div>
+                        <h3>Pro</h3>
+                        <div class="price">9€</div>
+                        <p class="price-subtitle">Para destacar</p>
+                        <ul>
+                            <li>5 portfolios</li>
+                            <li>Más estilos visuales</li>
+                            <li>Mejor personalización</li>
+                            <li>Guardado de proyectos</li>
+                        </ul>
+                        <a href="/generator" class="btn btn-primary price-btn">Elegir Pro</a>
+                    </article>
+
+                    <article class="price-card">
+                        <h3>Premium</h3>
+                        <div class="price">19€</div>
+                        <p class="price-subtitle">Para usuarios avanzados</p>
+                        <ul>
+                            <li>Portfolios ilimitados</li>
+                            <li>Exportación avanzada</li>
+                            <li>Diseños exclusivos</li>
+                            <li>Prioridad en novedades</li>
+                        </ul>
+                        <a href="/generator" class="btn btn-secondary price-btn">Elegir Premium</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="wrapper cta-box">
+                <div>
+                    <span class="section-tag">Empieza hoy</span>
+                    <h2>Tu portfolio profesional empieza con una sola frase</h2>
+                    <p>
+                        Convierte una idea simple en una presencia web mucho más potente y visual.
+                    </p>
+                </div>
+
+                <a href="/generator" class="btn btn-primary btn-large">Generar mi portfolio</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrapper footer-row">
+            <div>
+                <strong>Portify</strong>
+                <p>Proyecto web para generación de portfolios.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#plantillas">Plantillas</a>
+                <a href="#planes">Planes</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
