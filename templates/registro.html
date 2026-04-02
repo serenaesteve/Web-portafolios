@@ -1,46 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Portify</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .auth-body { min-height: 100vh; display: flex; flex-direction: column; }
-        .auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
-        .auth-card { background: rgba(255,255,255,.88); border: 1px solid rgba(234,222,222,.96); box-shadow: 0 20px 60px rgba(31,41,55,.12); border-radius: 28px; padding: 42px; width: 100%; max-width: 440px; }
-        .auth-card h1 { font-size: 2rem; letter-spacing: -.05em; margin: 16px 0 8px; }
-        .auth-card p { color: #6b7280; margin-bottom: 28px; }
-        .auth-card label { display: block; font-weight: 600; margin-bottom: 8px; }
-        .auth-card input { width: 100%; padding: 15px 18px; border-radius: 16px; border: 1px solid #eadede; background: #fff; font: inherit; font-size: 1rem; margin-bottom: 16px; outline: none; transition: .2s; }
-        .auth-card input:focus { border-color: #f18a8e; box-shadow: 0 0 0 3px rgba(241,138,142,.15); }
-        .auth-footer a { color: #e06a7c; font-weight: 600; }
-    </style>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Registro — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="auth-body">
-    <header class="site-header">
-        <div class="wrapper nav">
-            <a href="/" class="logo">Portify</a>
-            <div class="nav-actions">
-                <a href="/login" class="btn btn-secondary">Entrar</a>
-            </div>
-        </div>
-    </header>
-    <main class="auth-main">
-        <div class="auth-card">
-            <span class="section-tag">Gratis</span>
-            <h1>Crea tu cuenta</h1>
-            <p>¿Ya tienes cuenta? <a href="/login">Entra aquí</a></p>
-            {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
-            <form method="POST">
-                <label>Nombre</label>
-                <input type="text" name="nombre" placeholder="Tu nombre" required>
-                <label>Email</label>
-                <input type="email" name="email" placeholder="tu@email.com" required>
-                <label>Contraseña</label>
-                <input type="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
-                <button type="submit" class="btn btn-primary full-btn btn-large" style="margin-top:8px">Crear cuenta gratis</button>
-            </form>
-        </div>
-    </main>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <div class="nav-actions"><a href="/login" class="btn btn-ghost">Entrar</a></div>
+  </div>
+</header>
+<main class="auth-main">
+  <div class="auth-card">
+    <span class="section-tag">Gratis</span>
+    <h1>Crea tu cuenta</h1>
+    <p>¿Ya tienes cuenta? <a href="/login">Entra aquí</a></p>
+    {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+    <form method="POST">
+      <label>Nombre</label>
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <label>Email</label>
+      <input type="email" name="email" placeholder="tu@email.com" required>
+      <label>Contraseña</label>
+      <input type="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+      <button type="submit" class="btn btn-primary full-btn btn-large" style="margin-top:20px">Crear cuenta gratis</button>
+    </form>
+  </div>
+</main>
 </body>
 </html>

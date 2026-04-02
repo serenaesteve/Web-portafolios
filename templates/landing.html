@@ -1,148 +1,259 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portify - Crea tu portfolio con IA</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Portify — Tu portfolio creado por IA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header class="site-header">
-        <div class="wrapper nav">
-            <a href="/" class="logo">Portify</a>
-            <nav class="menu">
-                <a href="#como-funciona">Cómo funciona</a>
-                <a href="#demos">Ejemplos</a>
-                <a href="#planes">Planes</a>
-            </nav>
-            <div class="nav-actions">
-                <a href="/login" class="btn btn-secondary">Entrar</a>
-                <a href="/registro" class="btn btn-primary">Empezar gratis</a>
-            </div>
+
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <nav class="menu">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#demos">Demos</a>
+      <a href="#planes">Planes</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="/login"    class="btn btn-ghost">Entrar</a>
+      <a href="/registro" class="btn btn-primary">Empezar gratis</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrapper hero-grid">
+      <div class="hero-text reveal">
+        <span class="section-tag">IA local · Ollama · Sin datos a terceros</span>
+        <h1>Tu portfolio,<br><span>creado por IA</span><br>en minutos</h1>
+        <p class="hero-description">
+          Solo tienes que hablar. La IA te hace preguntas y genera tu web profesional automáticamente.
+          Sin tecnicismos, sin diseño, sin código.
+        </p>
+        <div class="hero-buttons">
+          <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio gratis</a>
+          <a href="#demos"    class="btn btn-secondary btn-large">Ver ejemplos</a>
         </div>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="wrapper hero-grid">
-                <div class="hero-text reveal">
-                    <span class="section-tag">IA conversacional · 100% local</span>
-                    <h1>Tu portfolio creado por IA en minutos</h1>
-                    <p class="hero-description">Responde unas preguntas y Portify genera automáticamente tu portfolio profesional. Sin formularios aburridos, sin código.</p>
-                    <div class="hero-buttons">
-                        <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio</a>
-                        <a href="#demos" class="btn btn-secondary btn-large">Ver ejemplos</a>
-                    </div>
-                    <div class="hero-proof">
-                        <div class="proof-item"><strong>IA local con Ollama</strong><span>Sin enviar datos a terceros</span></div>
-                        <div class="proof-item"><strong>Descarga tu web</strong><span>HTML listo para publicar</span></div>
-                    </div>
-                </div>
-                <div class="hero-visual reveal delay-1">
-                    <div class="floating-prompt">
-                        <span>Chat IA</span>
-                        <p>¿Cuáles son tus 4-6 habilidades principales? 💡</p>
-                    </div>
-                    <div class="product-window">
-                        <div class="window-bar"><i></i><i></i><i></i></div>
-                        <div class="product-content">
-                            <div class="product-left">
-                                <span class="badge-live">Portfolio generado</span>
-                                <h3>Alex Martín</h3>
-                                <p>Desarrollador Frontend</p>
-                                <div class="mock-lines"><div></div><div class="short"></div></div>
-                                <div class="mock-buttons"><button>Proyectos</button><button class="alt">Contacto</button></div>
-                            </div>
-                            <div class="product-right">
-                                <div class="preview-card big"></div>
-                                <div class="preview-row">
-                                    <div class="preview-card small"></div>
-                                    <div class="preview-card small light"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="trusted-bar">
-            <div class="wrapper trusted-row">
-                <span>Chat guiado</span><span>IA con Ollama</span><span>HTML descargable</span><span>100% privado</span>
-            </div>
-        </section>
-
-        <section class="how-section" id="como-funciona">
-            <div class="wrapper">
-                <div class="section-heading reveal">
-                    <span class="section-tag">Cómo funciona</span>
-                    <h2>Tres pasos, un portfolio profesional</h2>
-                </div>
-                <div class="steps-grid">
-                    <article class="step-card reveal"><div class="step-index">01</div><h3>Regístrate</h3><p>Crea tu cuenta gratis en segundos. Sin tarjeta de crédito.</p></article>
-                    <article class="step-card reveal delay-1"><div class="step-index">02</div><h3>Chatea con la IA</h3><p>Responde las preguntas de nuestro asistente. Cuanto más detallas, mejor resultado.</p></article>
-                    <article class="step-card reveal delay-2"><div class="step-index">03</div><h3>Descarga tu web</h3><p>Obtén tu portfolio en HTML listo para subir a cualquier hosting.</p></article>
-                </div>
-            </div>
-        </section>
-
-        <section class="demo-section" id="demos">
-            <div class="wrapper">
-                <div class="section-heading reveal"><span class="section-tag">Estilos</span><h2>Tres estilos para destacar</h2></div>
-                <div class="demo-grid">
-                    <article class="demo-card reveal"><div class="demo-preview preview-light"></div><h3>Minimalista</h3><p>Limpio y centrado en el contenido.</p></article>
-                    <article class="demo-card featured reveal delay-1"><div class="demo-preview preview-dark"></div><h3>Moderno oscuro</h3><p>Impacto visual y estética tecnológica.</p></article>
-                    <article class="demo-card reveal delay-2"><div class="demo-preview preview-creative"></div><h3>Creativo</h3><p>Color, personalidad y presencia propia.</p></article>
-                </div>
-            </div>
-        </section>
-
-        <section class="pricing-section" id="planes">
-            <div class="wrapper">
-                <div class="section-heading reveal"><span class="section-tag">Planes</span><h2>Elige tu plan</h2></div>
-                <div class="pricing-grid">
-                    <article class="price-card reveal">
-                        <h3>Free</h3><div class="price">0€</div><p class="price-sub">Para empezar</p>
-                        <ul><li>1 portfolio</li><li>Descarga HTML</li><li>3 estilos</li></ul>
-                        <a href="/registro" class="btn btn-secondary full-btn">Comenzar</a>
-                    </article>
-                    <article class="price-card featured-price reveal delay-1">
-                        <span class="price-badge">Más popular</span>
-                        <h3>Pro</h3><div class="price">9€</div><p class="price-sub">Para destacar</p>
-                        <ul><li>5 portfolios</li><li>Todos los estilos</li><li>Personalización avanzada</li></ul>
-                        <a href="/registro" class="btn btn-primary full-btn">Elegir Pro</a>
-                    </article>
-                    <article class="price-card reveal delay-2">
-                        <h3>Premium</h3><div class="price">19€</div><p class="price-sub">Sin límites</p>
-                        <ul><li>Portfolios ilimitados</li><li>Diseños exclusivos</li><li>Acceso prioritario</li></ul>
-                        <a href="/registro" class="btn btn-secondary full-btn">Elegir Premium</a>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="final-cta">
-            <div class="wrapper cta-box reveal">
-                <div>
-                    <span class="section-tag">Empieza hoy</span>
-                    <h2>Tu portfolio profesional empieza con una conversación</h2>
-                    <p>Gratis, rápido y con IA local. Sin excusas.</p>
-                </div>
-                <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio</a>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="wrapper footer-row">
-            <div><strong>Portify</strong><p>Generador de portfolios con IA local.</p></div>
-            <div class="footer-links">
-                <a href="#como-funciona">Cómo funciona</a>
-                <a href="#planes">Planes</a>
-                <a href="/login">Entrar</a>
-            </div>
+        <div class="hero-proof">
+          <div class="proof-item"><strong>100% local</strong><span>Tus datos no salen de tu máquina</span></div>
+          <div class="proof-item"><strong>HTML listo</strong><span>Descarga y publica donde quieras</span></div>
         </div>
-    </footer>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+      </div>
+
+      <div class="hero-visual reveal delay-1">
+        <div class="floating-prompt">
+          <span>Chat IA</span>
+          <p>¿Cómo imaginas el estilo de tu portfolio? ¿Algo oscuro y tecnológico, o claro y minimalista? 🎨</p>
+        </div>
+        <div class="product-window">
+          <div class="window-bar"><i></i><i></i><i></i></div>
+          <div class="product-content">
+            <div class="product-left">
+              <span class="badge-live">Portfolio generado</span>
+              <h3>Alex M.</h3>
+              <p style="color:var(--muted);font-size:.82rem">Frontend Developer</p>
+              <div class="mock-lines"><div></div><div class="short"></div></div>
+              <div class="mock-buttons">
+                <button>Proyectos</button>
+                <button class="alt">Contacto</button>
+              </div>
+            </div>
+            <div class="product-right">
+              <div class="preview-card big"></div>
+              <div class="preview-row">
+                <div class="preview-card small"></div>
+                <div class="preview-card small light"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED -->
+  <div class="trusted-bar">
+    <div class="wrapper trusted-row">
+      <span>Conversacional</span>
+      <span>IA con Ollama</span>
+      <span>HTML descargable</span>
+      <span>Privacidad total</span>
+      <span>Sin código</span>
+    </div>
+  </div>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="how-section" id="como-funciona">
+    <div class="wrapper">
+      <div class="section-heading reveal">
+        <span class="section-tag">Cómo funciona</span>
+        <h2>Tres pasos, un portfolio profesional</h2>
+        <p>No necesitas saber diseño ni programación. Solo responder a preguntas en tu idioma.</p>
+      </div>
+      <div class="steps-grid">
+        <article class="step-card reveal">
+          <div class="step-index">01</div>
+          <h3>Cuéntanos quién eres</h3>
+          <p>La IA te hace preguntas sencillas sobre ti, tu trabajo y cómo quieres que luzca tu portfolio. Sin tecnicismos.</p>
+        </article>
+        <article class="step-card reveal delay-1">
+          <div class="step-index">02</div>
+          <h3>La IA lo construye</h3>
+          <p>Con tus respuestas, Portify genera automáticamente una web completa, diseñada y lista para impresionar.</p>
+        </article>
+        <article class="step-card reveal delay-2">
+          <div class="step-index">03</div>
+          <h3>Descarga y publica</h3>
+          <p>Obtén tu portfolio en HTML. Súbelo a GitHub Pages, Netlify o cualquier hosting en segundos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMOS -->
+  <section class="demo-section" id="demos">
+    <div class="wrapper">
+      <div class="section-heading reveal">
+        <span class="section-tag">Estilos</span>
+        <h2>Tu estilo, tu identidad</h2>
+        <p>Elige entre tres estéticas distintas o déjate llevar por la IA. Siempre moderno, siempre profesional.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="demo-card reveal">
+          <div class="demo-preview preview-light"></div>
+          <h3>Minimalista claro</h3>
+          <p>Limpio, ordenado y centrado en el contenido. Para profesionales que prefieren dejar hablar al trabajo.</p>
+        </article>
+        <article class="demo-card featured reveal delay-1">
+          <div class="demo-preview preview-dark"></div>
+          <h3>Oscuro y moderno</h3>
+          <p>Impacto visual, contraste máximo y estética de producto tech. El favorito de developers y diseñadores.</p>
+        </article>
+        <article class="demo-card reveal delay-2">
+          <div class="demo-preview preview-creative"></div>
+          <h3>Creativo</h3>
+          <p>Personalidad, color y presencia propia. Para quienes quieren destacar y no pasar desapercibidos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="benefits-section">
+    <div class="wrapper benefits-grid">
+      <div class="benefits-copy reveal">
+        <span class="section-tag">Por qué Portify</span>
+        <h2>Diseñado para quien no tiene tiempo que perder</h2>
+        <p>Montar un portfolio desde cero puede llevar días. Con Portify lo tienes en minutos, con calidad de producto real.</p>
+      </div>
+      <div class="benefits-list">
+        <article class="benefit-card reveal" style="padding:22px">
+          <h3>Conversacional</h3>
+          <p>Sin formularios. La IA pregunta, tú respondes.</p>
+        </article>
+        <article class="benefit-card reveal delay-1" style="padding:22px">
+          <h3>Responsive</h3>
+          <p>Funciona en móvil, tablet y escritorio.</p>
+        </article>
+        <article class="benefit-card reveal delay-2" style="padding:22px">
+          <h3>IA privada</h3>
+          <p>Ollama corre en tu máquina. Cero cloud.</p>
+        </article>
+        <article class="benefit-card reveal delay-3" style="padding:22px">
+          <h3>Escalable</h3>
+          <p>Base sólida para seguir personalizando.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANES -->
+  <section class="pricing-section" id="planes">
+    <div class="wrapper">
+      <div class="section-heading reveal">
+        <span class="section-tag">Planes</span>
+        <h2>Empieza gratis, escala cuando quieras</h2>
+        <p>Sin tarjeta de crédito para empezar. Actualiza cuando necesites más.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="price-card reveal">
+          <h3>Free</h3>
+          <div class="price">0€</div>
+          <p class="price-sub">Para empezar</p>
+          <ul>
+            <li>1 portfolio</li>
+            <li>Descarga HTML</li>
+            <li>3 estilos</li>
+            <li>IA conversacional</li>
+          </ul>
+          <a href="/registro" class="btn btn-secondary full-btn">Empezar gratis</a>
+        </article>
+
+        <article class="price-card featured-price reveal delay-1">
+          <span class="price-badge">Más popular</span>
+          <h3>Pro</h3>
+          <div class="price">9€</div>
+          <p class="price-sub">Para destacar</p>
+          <ul>
+            <li>5 portfolios</li>
+            <li>Todos los estilos</li>
+            <li>Personalización avanzada</li>
+            <li>Historial de conversaciones</li>
+          </ul>
+          <a href="/registro" class="btn btn-primary full-btn">Elegir Pro</a>
+        </article>
+
+        <article class="price-card reveal delay-2">
+          <h3>Premium</h3>
+          <div class="price">19€</div>
+          <p class="price-sub">Sin límites</p>
+          <ul>
+            <li>Portfolios ilimitados</li>
+            <li>Diseños exclusivos</li>
+            <li>Exportación avanzada</li>
+            <li>Acceso prioritario</li>
+          </ul>
+          <a href="/registro" class="btn btn-secondary full-btn">Elegir Premium</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="final-cta">
+    <div class="wrapper">
+      <div class="cta-box reveal">
+        <div>
+          <span class="section-tag">Empieza hoy</span>
+          <h2>Tu portfolio profesional empieza con una conversación</h2>
+          <p>Gratis, en minutos, con IA que te entiende.</p>
+        </div>
+        <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio ahora</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrapper footer-row">
+    <div>
+      <strong class="logo">Portify</strong>
+      <p>Generador de portfolios con IA local.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#demos">Demos</a>
+      <a href="#planes">Planes</a>
+      <a href="/login">Entrar</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
