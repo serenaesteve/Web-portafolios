@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>¡Pago completado! — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .success-wrap {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+    .success-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-2xl);
+      padding: 52px 48px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg,#22c55e,#16a34a);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 28px;
+      box-shadow: 0 0 0 12px rgba(34,197,94,.08), 0 0 0 24px rgba(34,197,94,.04);
+      animation: pop .5s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes pop {
+      0%  { transform:scale(0); opacity:0 }
+      70% { transform:scale(1.1) }
+      100%{ transform:scale(1); opacity:1 }
+    }
+
+    h1 { font-family:'Instrument Serif',serif; font-size:1.9rem; font-weight:400; margin-bottom:8px; }
+    .sub { color:var(--text2); font-size:.92rem; margin-bottom:32px; line-height:1.6; }
+
+    .receipt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: .85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .rl { color: var(--text2); }
+    .receipt-row .rv { font-weight: 600; }
+    .receipt-row.total .rl,
+    .receipt-row.total .rv { color: var(--text); font-size: .95rem; }
+
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,rgba(124,109,250,.15),rgba(240,98,146,.1));
+      border: 1px solid rgba(124,109,250,.25);
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--violet);
+      margin-bottom: 20px;
+    }
+
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed;
+      width: 8px; height: 8px;
+      top: -10px;
+      animation: fall linear forwards;
+      border-radius: 2px;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <div class="nav-actions">
+      <a href="/dashboard" class="btn btn-ghost btn-sm">Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main class="success-wrap">
+  <div class="success-card reveal">
+    <div class="success-icon">✓</div>
+    <div class="plan-badge">✦ Plan {{ plan.nombre }} activado</div>
+    <h1>¡Pago completado!</h1>
+    <p class="sub">Tu plan ha sido activado. Ya puedes crear más portfolios y acceder a todas las funciones.</p>
+
+    <div class="receipt">
+      <div class="receipt-row">
+        <span class="rl">Plan</span>
+        <span class="rv">{{ plan.nombre }}</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rl">Importe</span>
+        <span class="rv">{{ "%.2f"|format(pago.importe) }} € / mes</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rl">Estado</span>
+        <span class="rv" style="color:#22c55e">✓ Completado</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rl">Referencia</span>
+        <span class="rv" style="font-family:monospace;font-size:.78rem">{{ pago.referencia }}</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rl">Fecha</span>
+        <span class="rv">{{ pago.creado_en[:10] }}</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="/dashboard" class="btn btn-primary">Ir a mi dashboard →</a>
+      <a href="/chat" class="btn btn-secondary">+ Crear un portfolio</a>
+      <a href="/factura/{{ pago.id }}" class="btn btn-ghost" target="_blank">🧾 Ver factura</a>
+    </div>
+  </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+// Confetti
+const colors = ['#7c6dfa','#f06292','#26d0ce','#f59e0b','#22c55e'];
+for (let i = 0; i < 60; i++) {
+  const el = document.createElement('div');
+  el.className = 'confetti-piece';
+  el.style.cssText = `
+    left:${Math.random()*100}vw;
+    background:${colors[Math.floor(Math.random()*colors.length)]};
+    animation-duration:${1.5+Math.random()*2}s;
+    animation-delay:${Math.random()*1}s;
+    transform:rotate(${Math.random()*360}deg) scale(${0.5+Math.random()});
+  `;
+  document.body.appendChild(el);
+}
+</script>
+</body>
+</html>

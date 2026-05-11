@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mensajes — {{ titulo }} — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <nav class="menu">
+      <a href="/dashboard">Portfolios</a>
+      <a href="/planes">Planes</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main style="padding:48px 0;min-height:80vh">
+  <div class="wrapper">
+    <div style="margin-bottom:28px">
+      <h1 style="font-size:1.4rem;font-weight:700;margin-bottom:6px">Mensajes recibidos</h1>
+      <p style="color:var(--text3);font-size:.88rem">Portfolio: <strong style="color:var(--text2)">{{ titulo }}</strong>
+        · <a href="/editar/{{ pid }}" style="color:var(--violet)">Editar portfolio →</a>
+      </p>
+    </div>
+
+    {% if mensajes %}
+    <div style="display:flex;flex-direction:column;gap:12px">
+      {% for m in mensajes %}
+      <div class="card" style="padding:20px 24px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <p style="font-weight:700;font-size:.95rem;margin-bottom:2px">{{ m.nombre }}</p>
+            <a href="mailto:{{ m.email }}" style="font-size:.8rem;color:var(--violet)">{{ m.email }}</a>
+          </div>
+          <span style="font-size:.72rem;color:var(--text3);white-space:nowrap">{{ m.creado_en[:16] }}</span>
+        </div>
+        <p style="margin-top:12px;color:var(--text2);font-size:.9rem;line-height:1.7;white-space:pre-wrap">{{ m.mensaje }}</p>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <a href="mailto:{{ m.email }}?subject=Re: tu mensaje en mi portfolio"
+             class="btn btn-secondary btn-sm">Responder</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="padding:48px;text-align:center">
+      <div style="font-size:2rem;opacity:.3;margin-bottom:12px">✉️</div>
+      <h2 style="font-size:1.1rem;margin-bottom:6px">Aún no hay mensajes</h2>
+      <p style="color:var(--text3);font-size:.88rem">Cuando alguien use el formulario de tu portfolio, los mensajes aparecerán aquí.</p>
+    </div>
+    {% endif %}
+  </div>
+</main>
+</body>
+</html>

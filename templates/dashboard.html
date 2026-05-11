@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dashboard — Portify</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -10,29 +10,30 @@
   <div class="wrapper nav">
     <a href="/" class="logo">Portify</a>
     <nav class="menu">
-      <a href="/dashboard">Mis portfolios</a>
+      <a href="/dashboard">Portfolios</a>
       <a href="/planes">Planes</a>
     </nav>
     <div class="nav-actions">
-      <span style="color:var(--muted);font-size:.85rem">{{ user.nombre }}</span>
-      <a href="/logout" class="btn btn-ghost">Salir</a>
+      <span style="color:var(--text3);font-size:.82rem;font-weight:500">{{ user.nombre }}</span>
+      <a href="/logout" class="btn btn-ghost btn-sm">Salir</a>
     </div>
   </div>
 </header>
 
-<main class="dash-main">
+<main class="dash-wrap">
   <div class="wrapper">
 
     {% if error %}
-    <div class="error-box" style="margin-bottom:24px">
-      {{ error }} <a href="/planes" style="color:var(--accent);font-weight:600">Ver planes →</a>
+    <div class="error-msg" style="margin-bottom:24px">
+      {{ error }} — <a href="/planes" style="color:var(--violet)">Ver planes →</a>
     </div>
     {% endif %}
 
-    <div class="dash-header">
+    <!-- Header -->
+    <div class="dash-topbar">
       <div>
-        <h1>Mis portfolios</h1>
-        <div class="plan-badge">Plan <span>{{ plan.nombre }}</span></div>
+        <h1 class="dash-title">Mis portfolios</h1>
+        <div class="plan-chip" style="margin-top:8px">Plan <b>{{ plan.nombre }}</b></div>
       </div>
       {% set count = portfolios|length %}
       {% if count < plan.max_portfolios %}
@@ -42,49 +43,171 @@
       {% endif %}
     </div>
 
+    <!-- Quota -->
     {% set count = portfolios|length %}
-    <div class="limit-bar">
-      <p>{{ count }} de {{ plan.max_portfolios if plan.max_portfolios < 999 else '∞' }} usados</p>
-      <div class="limit-track">
-        <div class="limit-fill" style="width:{{ [(count / plan.max_portfolios * 100) if plan.max_portfolios < 999 else 0, 100]|min }}%"></div>
+    <div class="quota-bar">
+      <p>{{ count }} de {{ plan.max_portfolios if plan.max_portfolios < 999 else '∞' }} portfolios</p>
+      <div class="quota-track">
+        <div class="quota-fill" style="width:{{ [(count / plan.max_portfolios * 100) if plan.max_portfolios < 999 else 0, 100]|min }}%"></div>
       </div>
       {% if count >= plan.max_portfolios and plan.max_portfolios < 999 %}
         <a href="/planes" class="btn btn-primary btn-sm">Mejorar</a>
       {% endif %}
     </div>
 
+    <!-- Portfolios -->
     {% if portfolios %}
-    <div class="portfolios-grid">
+    <div class="grid-portfolios">
       {% for p in portfolios %}
-      <div class="portfolio-card">
-        <div class="pcard-thumb"><span>{{ p.creado_en[:10] }}</span></div>
-        <div class="pcard-body">
+      <div class="card port-card card-hover">
+        <div class="port-thumb">
+          <div class="port-thumb-badge">
+            {% if p.plantilla == 'oscuro' %}🖤 Oscuro
+            {% elif p.plantilla == 'minimalista' %}⚪ Minimalista
+            {% elif p.plantilla == 'creativo' %}🎨 Creativo
+            {% elif p.plantilla == 'editorial' %}📰 Editorial
+            {% else %}🌿 Orgánico{% endif %}
+          </div>
+        </div>
+        <div class="port-body">
           <h3>{{ p.titulo }}</h3>
-          <p>Creado el {{ p.creado_en[:10] }}</p>
-          <div class="pcard-actions">
+          {% if p.usuario_slug %}
+          <p class="port-date" style="font-family:monospace;font-size:.75rem;color:var(--violet);margin-bottom:2px">{{ p.usuario_slug }}.{{ domain_base }}</p>
+          {% endif %}
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span class="port-date" style="margin:0">{{ p.creado_en[:10] }}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="color:var(--text3);font-size:.75rem" title="Visitas totales">👁 {{ p.visitas or 0 }}</span>
+              {% if unread_msgs.get(p.id, 0) > 0 %}
+              <a href="/portfolio/{{ p.id }}/mensajes" style="display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:999px;background:#e06a7c22;border:1px solid #e06a7c44;color:#e06a7c;font-size:.7rem;font-weight:700;text-decoration:none" title="Mensajes nuevos">
+                ✉️ {{ unread_msgs[p.id] }}
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          <div style="margin-bottom:12px" title="Visitas últimos 14 días">
+            {{ sparklines.get(p.id, '') }}
+          </div>
+          <div class="port-actions">
+            {% if p.usuario_slug %}
+            <a href="https://{{ p.usuario_slug }}.{{ domain_base }}" target="_blank" class="btn btn-primary btn-sm">Ver ↗</a>
+            {% else %}
             <a href="/portfolio/{{ p.id }}" target="_blank" class="btn btn-primary btn-sm">Ver</a>
-            <a href="/portfolio/{{ p.id }}/descargar" class="btn btn-secondary btn-sm">Descargar</a>
-            <form action="/portfolio/{{ p.id }}/eliminar" method="POST" style="display:inline"
-                  onsubmit="return confirm('¿Eliminar este portfolio?')">
-              <button type="submit" class="btn btn-ghost btn-sm" style="color:#f87171">Eliminar</button>
+            {% endif %}
+            {% if p.slug %}<a href="/p/{{ p.slug }}" target="_blank" class="btn btn-secondary btn-sm">Link directo</a>{% endif %}
+            <a href="/editar/{{ p.id }}" class="btn btn-ghost btn-sm">✏️</a>
+            <button onclick="openStats({{ p.id }},'{{ p.titulo }}')" class="btn btn-ghost btn-sm" title="Analytics">📊</button>
+            <a href="/portfolio/{{ p.id }}/mensajes" class="btn btn-ghost btn-sm" title="Mensajes">✉️</a>
+            <a href="/portfolio/{{ p.id }}/qr" class="btn btn-ghost btn-sm" title="Descargar QR">⬛ QR</a>
+            <a href="/portfolio/{{ p.id }}/descargar" class="btn btn-ghost btn-sm" title="Descargar HTML">↓</a>
+            <button onclick="togglePassword({{ p.id }}, {{ 'true' if p.password_hash else 'false' }})"
+                    class="btn btn-ghost btn-sm" title="{{ 'Quitar contraseña' if p.password_hash else 'Poner contraseña' }}">
+              {{ '🔒' if p.password_hash else '🔓' }}
+            </button>
+            <form action="/portfolio/{{ p.id }}/clonar" method="POST" style="display:inline" title="Duplicar portfolio">
+              <button type="submit" class="btn btn-ghost btn-sm">⎘</button>
+            </form>
+            <form action="/portfolio/{{ p.id }}/eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este portfolio?')">
+              <button type="submit" class="btn btn-danger btn-sm">✕</button>
             </form>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-
     {% else %}
-    <div class="empty-state">
-      <div style="font-size:2.5rem;margin-bottom:8px">✦</div>
+    <div class="empty-dash">
+      <div style="font-size:2.5rem;opacity:.3;margin-bottom:4px">✦</div>
       <h2>Aún no tienes portfolios</h2>
-      <p>La IA te hará unas preguntas y en minutos tendrás tu web lista.</p>
-      <a href="/chat" class="btn btn-primary btn-large">Crear mi primer portfolio</a>
+      <p>La IA te hará unas preguntas y en minutos tendrás tu web lista para compartir.</p>
+      <a href="/chat" class="btn btn-primary btn-lg">Crear mi primer portfolio</a>
     </div>
     {% endif %}
 
   </div>
 </main>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+async function togglePassword(pid, tienePassword) {
+  if (tienePassword) {
+    if (!confirm('¿Quitar la contraseña de este portfolio?')) return;
+    const r = await fetch(`/portfolio/${pid}/password`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({password: ''})
+    });
+    if ((await r.json()).ok) location.reload();
+  } else {
+    const pwd = prompt('Elige una contraseña para proteger este portfolio:');
+    if (!pwd || !pwd.trim()) return;
+    const r = await fetch(`/portfolio/${pid}/password`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({password: pwd.trim()})
+    });
+    if ((await r.json()).ok) location.reload();
+  }
+}
+
+async function openStats(pid) {
+  const r = await fetch(`/portfolio/${pid}/stats`);
+  const d = await r.json();
+  if (d.error) { alert(d.error); return; }
+
+  const total = d.total || 0;
+  const daily = d.daily || [];
+  const devices = d.devices || [];
+  const refs = d.refs || [];
+  const msgs = d.unread_msgs || 0;
+
+  const maxCnt = Math.max(1, ...daily.map(x => x.cnt));
+  const barW = 8, barGap = 3, chartH = 60;
+  let bars = '';
+  daily.slice(-28).forEach((row, i) => {
+    const h = Math.max(3, Math.round((row.cnt / maxCnt) * chartH));
+    bars += `<rect x="${i*(barW+barGap)}" y="${chartH-h}" width="${barW}" height="${h}" rx="2" fill="var(--violet)" opacity=".8"><title>${row.fecha}: ${row.cnt}</title></rect>`;
+  });
+  const chartW = 28*(barW+barGap);
+  const chartSvg = `<svg width="${chartW}" height="${chartH}" style="overflow:visible">${bars}</svg>`;
+  const devHtml = devices.map(dv => `<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--border);font-size:.78rem">${dv.type==='mobile'?'📱':'🖥'} ${dv.type}: <strong>${dv.cnt}</strong></span>`).join('');
+  const refHtml = refs.length ? refs.map(rv => {
+    const dom = rv.ref.replace(/^https?:\/\//,'').split('/')[0]||'Directo';
+    return `<div style="display:flex;justify-content:space-between;font-size:.78rem;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">${dom}</span><strong>${rv.cnt}</strong></div>`;
+  }).join('') : '<p style="font-size:.78rem;color:var(--text3)">Sin datos aún</p>';
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:28px;width:min(520px,100%);max-height:80vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h3 style="font-size:1rem;font-weight:700">📊 Analytics · ${d.titulo}</h3>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr${msgs>0?' 1fr':''};gap:12px;margin-bottom:20px">
+        <div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--violet)">${total}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Visitas totales</div>
+        </div>
+        <div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--violet)">${daily.reduce((a,b)=>a+b.cnt,0)}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Últimos 30d</div>
+        </div>
+        ${msgs>0?`<div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:#e06a7c">${msgs}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Mensajes nuevos</div>
+        </div>`:''}
+      </div>
+      <div style="margin-bottom:20px">
+        <p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Visitas últimos 28 días</p>
+        ${chartSvg}
+      </div>
+      ${devHtml?`<div style="margin-bottom:20px"><p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Dispositivos</p><div style="display:flex;gap:8px;flex-wrap:wrap">${devHtml}</div></div>`:''}
+      <div><p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Top orígenes</p>${refHtml}</div>
+      <div style="margin-top:16px;display:flex;gap:8px">
+        <a href="/portfolio/${pid}/mensajes" style="padding:8px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.8rem;text-decoration:none">✉️ Ver mensajes</a>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+}
+</script>
 </body>
 </html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Descubrir portfolios — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .discover-hero {
+      padding: 72px 0 48px;
+      text-align: center;
+    }
+    .discover-hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 400;
+      letter-spacing: -.03em;
+      margin-bottom: 14px;
+    }
+    .discover-hero p {
+      color: var(--text2);
+      font-size: .97rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text2);
+      font-size: .82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .portfolios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding-bottom: 80px;
+    }
+
+    .port-discover-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .port-discover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.4);
+    }
+
+    .card-thumb {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-thumb-label {
+      font-size: 2rem;
+      opacity: .7;
+    }
+    .card-thumb-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: .06;
+      background-image:
+        linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-body {
+      padding: 18px 20px;
+    }
+    .card-nombre {
+      font-weight: 600;
+      font-size: .97rem;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-rol {
+      color: var(--text2);
+      font-size: .82rem;
+      margin-bottom: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: .75rem;
+      color: var(--text3);
+    }
+    .card-plantilla-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--surface2);
+      font-size: .72rem;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text3);
+      grid-column: 1/-1;
+    }
+    .empty-state p { margin-top: 12px; font-size: .9rem; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <nav class="menu">
+      <a href="/descubrir" style="color:var(--text)">Descubrir</a>
+    </nav>
+    <div class="nav-actions">
+      {% if session.get('user_id') %}
+        <a href="/dashboard" class="btn btn-ghost btn-sm">Dashboard</a>
+      {% else %}
+        <a href="/login" class="btn btn-ghost btn-sm">Entrar</a>
+        <a href="/registro" class="btn btn-primary btn-sm">Empezar gratis</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="discover-hero">
+    <div class="wrapper">
+      <span class="badge badge-grad" style="margin-bottom:16px">Comunidad</span>
+      <h1>Descubre portfolios<br><em>creados con IA</em></h1>
+      <p>Inspírate con los portfolios que otros han creado. Todos generados con Portify en minutos.</p>
+
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" onclick="filtrar('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtrar('oscuro',this)">🖤 Oscuro</button>
+        <button class="filter-btn" onclick="filtrar('minimalista',this)">⚪ Minimalista</button>
+        <button class="filter-btn" onclick="filtrar('creativo',this)">🎨 Creativo</button>
+        <button class="filter-btn" onclick="filtrar('editorial',this)">📰 Editorial</button>
+        <button class="filter-btn" onclick="filtrar('organico',this)">🌿 Orgánico</button>
+        <button class="filter-btn" onclick="filtrar('glass',this)">🔮 Glass</button>
+        <button class="filter-btn" onclick="filtrar('neo',this)">⬛ Neo</button>
+        <button class="filter-btn" onclick="filtrar('terminal',this)">💻 Terminal</button>
+        <button class="filter-btn" onclick="filtrar('luxury',this)">✨ Luxury</button>
+        <button class="filter-btn" onclick="filtrar('retro',this)">📼 Retro</button>
+        <button class="filter-btn" onclick="filtrar('nordic',this)">❄️ Nordic</button>
+        <button class="filter-btn" onclick="filtrar('pastel',this)">🌸 Pastel</button>
+        <button class="filter-btn" onclick="filtrar('neon',this)">⚡ Neon</button>
+        <button class="filter-btn" onclick="filtrar('magazine',this)">🗞️ Magazine</button>
+        <button class="filter-btn" onclick="filtrar('gradient',this)">🌈 Gradient</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrapper">
+    <div class="portfolios-grid" id="grid">
+      {% set EMOJIS = {
+        'oscuro':'🖤','minimalista':'⚪','creativo':'🎨','editorial':'📰','organico':'🌿',
+        'glass':'🔮','neo':'⬛','terminal':'💻','luxury':'✨','retro':'📼',
+        'nordic':'❄️','pastel':'🌸','neon':'⚡','magazine':'🗞️','gradient':'🌈'
+      } %}
+      {% for p in portfolios %}
+      {% set url = 'https://' + p.usuario_slug + '.' + domain_base if p.usuario_slug else '/p/' + p.slug %}
+      <a class="port-discover-card reveal" href="{{ url }}" target="_blank"
+         data-plantilla="{{ p.plantilla }}">
+        <div class="card-thumb" style="background:linear-gradient(135deg,{{ p.color }}22,{{ p.color }}08)">
+          <div class="card-thumb-pattern"></div>
+          <span class="card-thumb-label">{{ EMOJIS.get(p.plantilla, '🎨') }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-nombre">{{ p.nombre }}</div>
+          <div class="card-rol">{{ p.rol or 'Portfolio profesional' }}</div>
+          <div class="card-meta">
+            <span class="card-plantilla-badge">{{ EMOJIS.get(p.plantilla,'🎨') }} {{ p.plantilla|capitalize }}</span>
+            <span title="Visitas">👁 {{ p.visitas }}</span>
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <div class="empty-state">
+        <div style="font-size:2.5rem;opacity:.2">✦</div>
+        <p>Aún no hay portfolios públicos. ¡Sé el primero!</p>
+        <a href="/registro" class="btn btn-primary" style="margin-top:20px">Crear mi portfolio</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrapper footer-row">
+    <div>
+      <a href="/" class="logo" style="font-size:1.1rem">Portify</a>
+      <p style="color:var(--text3);font-size:.78rem;margin-top:4px">Generador de portfolios con IA local.</p>
+    </div>
+    <div class="footer-links">
+      <a href="/descubrir">Descubrir</a>
+      <a href="/login">Entrar</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+function filtrar(plantilla, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.port-discover-card').forEach(card => {
+    if (plantilla === 'todos' || card.dataset.plantilla === plantilla) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

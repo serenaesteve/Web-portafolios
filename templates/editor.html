@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Editar Portfolio — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    html,body{height:100%;overflow:hidden}
+    .editor-wrap{height:calc(100vh - 60px);display:grid;grid-template-columns:340px 1fr;overflow:hidden}
+
+    /* PANEL IZQUIERDO */
+    .editor-panel{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+    .editor-panel::-webkit-scrollbar{width:3px}
+    .editor-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
+    .ep-header{padding:18px 20px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+    .ep-header h2{font-family:'Instrument Serif',serif;font-size:1.1rem;font-weight:400;margin:0}
+    .ep-body{padding:20px;flex:1}
+
+    .ep-section{margin-bottom:24px}
+    .ep-section-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .ep-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    .ep-field{margin-bottom:12px}
+    .ep-label{font-size:.72rem;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;letter-spacing:.03em}
+    .ep-input,.ep-textarea{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);font:inherit;font-size:.85rem;outline:none;transition:.15s}
+    .ep-input:focus,.ep-textarea:focus{border-color:rgba(124,109,250,.4);box-shadow:0 0 0 3px rgba(124,109,250,.06)}
+    .ep-textarea{resize:vertical;min-height:72px;line-height:1.6}
+
+    /* Proyectos */
+    .proj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+    .proj-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .proj-card-title{font-size:.82rem;font-weight:600}
+    .proj-collapse{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:.8rem;padding:2px 6px}
+    .proj-body{display:flex;flex-direction:column;gap:8px}
+
+    .img-upload-area{border:1px dashed var(--border2);border-radius:var(--r-sm);padding:12px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+    .img-upload-area:hover{border-color:var(--violet);background:var(--surface2)}
+    .img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .img-thumb{width:100%;height:80px;object-fit:cover;border-radius:6px;display:block}
+    .img-placeholder{font-size:.75rem;color:var(--text3);pointer-events:none}
+
+    /* Animaciones */
+    .anim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .anim-card{padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);cursor:pointer;transition:.15s;text-align:center}
+    .anim-card:hover{border-color:var(--border2);background:var(--surface2)}
+    .anim-card.selected{border-color:rgba(124,109,250,.4);background:rgba(124,109,250,.06)}
+    .anim-card h4{font-size:.78rem;font-weight:600;margin-bottom:2px}
+    .anim-card p{font-size:.68rem;color:var(--text3)}
+    .anim-suggested{font-size:.68rem;color:var(--violet);margin-bottom:8px;display:flex;align-items:center;gap:4px}
+    .anim-suggested::before{content:'✦';font-size:.6rem}
+
+    /* Skills */
+    .skills-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+    .skill-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border2);font-size:.75rem}
+    .skill-tag button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:.75rem;line-height:1;padding:0}
+    .skill-tag button:hover{color:var(--text)}
+
+    /* Botones footer */
+    .ep-footer{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px}
+
+    /* Preview */
+    .preview-area{overflow:hidden;position:relative;background:var(--bg)}
+    .preview-area iframe{width:100%;height:100%;border:none}
+    .preview-updating{position:absolute;top:12px;right:12px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:5px 10px;font-size:.72rem;color:var(--text2);opacity:0;transition:.2s;pointer-events:none}
+    .preview-updating.show{opacity:1}
+
+    @media(max-width:900px){.editor-wrap{grid-template-columns:1fr}.preview-area{display:none}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <div class="nav-actions">
+      <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+      <a href="/p/{{ portfolio.slug }}" target="_blank" class="btn btn-secondary btn-sm">Ver publicado</a>
+    </div>
+  </div>
+</header>
+
+<div class="editor-wrap">
+  <!-- PANEL DE EDICIÓN -->
+  <div class="editor-panel">
+    <div class="ep-header">
+      <h2>Editar portfolio</h2>
+      <span style="font-size:.72rem;color:var(--text3)">Autoguardado</span>
+    </div>
+
+    <div class="ep-body">
+
+      <!-- INFO PERSONAL -->
+      <div class="ep-section">
+        <div class="ep-section-title">Información personal</div>
+        <div class="ep-field"><label class="ep-label">Nombre</label><input class="ep-input" id="e-nombre" value="{{ datos.nombre or '' }}" oninput="updateField('nombre',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">Rol / Profesión</label><input class="ep-input" id="e-rol" value="{{ datos.rol or '' }}" oninput="updateField('rol',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">Descripción</label><textarea class="ep-textarea" id="e-desc" oninput="updateField('descripcion',this.value)">{{ datos.descripcion or '' }}</textarea></div>
+      </div>
+
+      <!-- HABILIDADES -->
+      <div class="ep-section">
+        <div class="ep-section-title">Habilidades</div>
+        <div class="skills-wrap" id="skillsWrap"></div>
+        <div style="display:flex;gap:6px">
+          <input class="ep-input" id="newSkill" placeholder="Añadir habilidad..." style="flex:1" onkeydown="if(event.key==='Enter'){addSkill();event.preventDefault()}">
+          <button class="btn btn-secondary btn-sm" onclick="addSkill()">+</button>
+        </div>
+      </div>
+
+      <!-- PROYECTOS -->
+      <div class="ep-section">
+        <div class="ep-section-title">Proyectos</div>
+        <div id="projectsWrap"></div>
+        <button class="btn btn-ghost btn-sm full" onclick="addProject()" style="margin-top:4px">+ Añadir proyecto</button>
+      </div>
+
+      <!-- CONTACTO -->
+      <div class="ep-section">
+        <div class="ep-section-title">Contacto y redes</div>
+        <div class="ep-field"><label class="ep-label">Email</label><input class="ep-input" id="e-email" placeholder="tu@email.com" value="{{ datos.email or '' }}" oninput="updateField('email',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">🌐 Web personal</label><input class="ep-input" id="e-website" placeholder="mipagina.com" value="{{ (datos.redes or {}).get('website','') }}" oninput="updateRed('website',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">LinkedIn</label><input class="ep-input" id="e-linkedin" placeholder="linkedin.com/in/tu-nombre" value="{{ (datos.redes or {}).get('linkedin','') }}" oninput="updateRed('linkedin',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">GitHub</label><input class="ep-input" id="e-github" placeholder="github.com/tu-usuario" value="{{ (datos.redes or {}).get('github','') }}" oninput="updateRed('github',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">Twitter / X</label><input class="ep-input" id="e-twitter" placeholder="twitter.com/tu-usuario" value="{{ (datos.redes or {}).get('twitter','') }}" oninput="updateRed('twitter',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">Instagram</label><input class="ep-input" id="e-instagram" placeholder="instagram.com/tu-usuario" value="{{ (datos.redes or {}).get('instagram','') }}" oninput="updateRed('instagram',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">YouTube</label><input class="ep-input" id="e-youtube" placeholder="youtube.com/@tu-canal" value="{{ (datos.redes or {}).get('youtube','') }}" oninput="updateRed('youtube',this.value)"></div>
+        <div class="ep-field"><label class="ep-label">TikTok</label><input class="ep-input" id="e-tiktok" placeholder="tiktok.com/@tu-usuario" value="{{ (datos.redes or {}).get('tiktok','') }}" oninput="updateRed('tiktok',this.value)"></div>
+      </div>
+
+      <!-- ESTILO -->
+      <div class="ep-section">
+        <div class="ep-section-title">Estilo visual</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          {% for tpl_id, tpl_label in [('oscuro','🖤 Oscuro'),('minimalista','⚪ Minimalista'),('creativo','🎨 Creativo'),('editorial','📰 Editorial'),('organico','🌿 Orgánico'),('cv','📄 CV')] %}
+          <div class="anim-card {% if portfolio.plantilla == tpl_id %}selected{% endif %}" onclick="setPlantilla('{{ tpl_id }}',this)">
+            <h4>{{ tpl_label }}</h4>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="ep-field">
+          <label class="ep-label">Color de acento</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            {% for color, label in [('#F18A8E','🌸 Coral'),('#E06A7C','🌹 Rosa'),('#6B5A7A','🌿 Morado'),('#3E627F','🌊 Azul'),('#F2B38C','🍑 Melocotón')] %}
+            <div onclick="setColor('{{ color }}',this)" style="width:28px;height:28px;border-radius:50%;background:{{ color }};cursor:pointer;border:2px solid {% if datos.color == color %}white{% else %}transparent{% endif %};transition:.15s" title="{{ label }}"></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- URL PERSONALIZADA -->
+      <div class="ep-section">
+        <div class="ep-section-title">URL personalizada</div>
+        <div class="ep-field">
+          <label class="ep-label">portify.es/p/<span style="color:var(--violet)">tu-slug</span></label>
+          <div style="display:flex;gap:8px">
+            <input class="ep-input" id="custom-slug-input" placeholder="tu-nombre"
+                   value="{{ portfolio.custom_slug or '' }}"
+                   oninput="slugChanged()" style="flex:1;font-family:monospace">
+            <button class="btn btn-secondary btn-sm" onclick="saveCustomSlug()" id="slug-save-btn">Guardar</button>
+          </div>
+          <p id="slug-msg" style="font-size:.72rem;margin-top:6px;display:none"></p>
+        </div>
+      </div>
+
+      <!-- ANIMACIONES -->
+      <div class="ep-section">
+        <div class="ep-section-title">Animación</div>
+        <div class="anim-suggested">Sugerida para tu estilo: <strong>{{ animaciones[anim_sugerida].nombre }}</strong></div>
+        <div class="anim-grid">
+          {% for anim_id, anim in animaciones.items() %}
+          <div class="anim-card {% if portfolio.animacion == anim_id %}selected{% endif %}" onclick="setAnim('{{ anim_id }}',this)">
+            <h4>{{ anim.nombre }}</h4>
+            <p>{{ anim.desc }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ep-footer">
+      <button class="btn btn-primary" onclick="guardar()" id="saveBtn" style="flex:1">Guardar y publicar</button>
+      <button class="btn btn-secondary" onclick="openStats()" title="Analytics">📊</button>
+      <button class="btn btn-secondary" onclick="openVersiones()" title="Historial de versiones">🕘</button>
+      <a href="/portfolio/{{ pid }}/mensajes" class="btn btn-secondary" title="Mensajes recibidos">✉️</a>
+      <a href="/portfolio/{{ pid }}/descargar" class="btn btn-secondary">↓ HTML</a>
+    </div>
+  </div>
+
+  <!-- PREVIEW EN VIVO -->
+  <div class="preview-area">
+    <div class="preview-updating" id="previewUpdating">Actualizando...</div>
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+
+<script>
+let datos = {{ datos|tojson }};
+let pid = {{ pid }};
+let previewTimeout = null;
+
+// Init skills
+function renderSkills(){
+  const wrap=document.getElementById('skillsWrap');
+  wrap.innerHTML='';
+  (datos.habilidades||[]).forEach((s,i)=>{
+    const d=document.createElement('div');d.className='skill-tag';
+    d.innerHTML=`<span>${s}</span><button onclick="removeSkill(${i})">×</button>`;
+    wrap.appendChild(d);
+  });
+}
+
+function addSkill(){
+  const inp=document.getElementById('newSkill');
+  const val=inp.value.trim();
+  if(!val) return;
+  if(!datos.habilidades) datos.habilidades=[];
+  datos.habilidades.push(val);
+  inp.value='';
+  renderSkills();
+  schedulePreview();
+}
+
+function removeSkill(i){
+  datos.habilidades.splice(i,1);
+  renderSkills();
+  schedulePreview();
+}
+
+// Init projects
+function renderProjects(){
+  const wrap=document.getElementById('projectsWrap');
+  wrap.innerHTML='';
+  (datos.proyectos||[]).forEach((p,i)=>{
+    const d=document.createElement('div');d.className='proj-card';
+    d.innerHTML=`
+      <div class="proj-card-header">
+        <span class="proj-card-title">Proyecto ${i+1}: ${p.titulo||'Sin título'}</span>
+        <button class="proj-collapse" onclick="removeProject(${i})">× Eliminar</button>
+      </div>
+      <div class="proj-body">
+        <input class="ep-input" placeholder="Título" value="${escHtml(p.titulo||'')}" oninput="updateProject(${i},'titulo',this.value)">
+        <textarea class="ep-textarea" style="min-height:56px" placeholder="Descripción" oninput="updateProject(${i},'descripcion',this.value)">${escHtml(p.descripcion||'')}</textarea>
+        <input class="ep-input" placeholder="Tecnologías (ej: React, Node.js)" value="${escHtml(p.tecnologias||'')}" oninput="updateProject(${i},'tecnologias',this.value)">
+        <input class="ep-input" placeholder="URL del proyecto (opcional)" value="${escHtml(p.url||'')}" oninput="updateProject(${i},'url',this.value)">
+        <div class="img-upload-area" id="imgArea${i}">
+          <input type="file" accept="image/*" onchange="uploadProjectImg(${i},this)">
+          ${p.imagen ? `<img src="${p.imagen}" class="img-thumb" id="imgThumb${i}">` : `<p class="img-placeholder">📷 Subir imagen del proyecto<br><span style="font-size:.65rem;opacity:.6">JPG, PNG, GIF · máx 10MB</span></p>`}
+        </div>
+      </div>`;
+    wrap.appendChild(d);
+  });
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function updateProject(i,key,val){
+  if(!datos.proyectos[i]) datos.proyectos[i]={};
+  datos.proyectos[i][key]=val;
+  document.querySelectorAll('.proj-card-title')[i].textContent=`Proyecto ${i+1}: ${datos.proyectos[i].titulo||'Sin título'}`;
+  schedulePreview();
+}
+
+function removeProject(i){ datos.proyectos.splice(i,1); renderProjects(); schedulePreview(); }
+
+function addProject(){
+  if(!datos.proyectos) datos.proyectos=[];
+  datos.proyectos.push({titulo:'',descripcion:'',tecnologias:'',url:'',imagen:''});
+  renderProjects();
+}
+
+async function uploadProjectImg(i,input){
+  if(!input.files||!input.files[0]) return;
+  const fd=new FormData(); fd.append('imagen',input.files[0]);
+  try{
+    const r=await fetch('/api/subir-imagen',{method:'POST',body:fd});
+    const data=await r.json();
+    if(data.ok){
+      datos.proyectos[i].imagen=data.src;
+      const area=document.getElementById(`imgArea${i}`);
+      const thumb=document.getElementById(`imgThumb${i}`);
+      if(thumb){ thumb.src=data.src; }
+      else {
+        const img=document.createElement('img');
+        img.src=data.src; img.className='img-thumb'; img.id=`imgThumb${i}`;
+        area.querySelector('.img-placeholder')?.remove();
+        area.appendChild(img);
+      }
+      schedulePreview();
+    }
+  }catch(e){}
+  input.value='';
+}
+
+function updateField(key,val){ datos[key]=val; schedulePreview(); }
+function updateRed(key,val){ if(!datos.redes) datos.redes={}; datos.redes[key]=val; schedulePreview(); }
+
+function setPlantilla(tpl,el){
+  datos.plantilla=tpl;
+  document.querySelectorAll('.ep-section .anim-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  schedulePreview();
+}
+
+function setColor(c,el){
+  datos.color=c;
+  document.querySelectorAll('[onclick^="setColor"]').forEach(d=>d.style.border='2px solid transparent');
+  el.style.border='2px solid white';
+  schedulePreview();
+}
+
+function setAnim(a,el){
+  datos.animacion=a;
+  document.querySelectorAll('.anim-grid .anim-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  schedulePreview();
+}
+
+function schedulePreview(){
+  clearTimeout(previewTimeout);
+  document.getElementById('previewUpdating').classList.add('show');
+  previewTimeout=setTimeout(updatePreview, 600);
+}
+
+async function updatePreview(){
+  try{
+    const r=await fetch('/generar-preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)});
+    const html=await r.text();
+    const iframe=document.getElementById('previewFrame');
+    const doc=iframe.contentDocument||iframe.contentWindow.document;
+    doc.open();doc.write(html);doc.close();
+  }catch(e){}
+  document.getElementById('previewUpdating').classList.remove('show');
+}
+
+async function guardar(){
+  const btn=document.getElementById('saveBtn');
+  btn.textContent='Guardando...'; btn.disabled=true;
+  try{
+    const r=await fetch(`/api/actualizar-portfolio/${pid}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({datos})});
+    const data=await r.json();
+    if(data.ok){
+      btn.textContent='¡Guardado! ✓';
+      setTimeout(()=>{btn.textContent='Guardar y publicar';btn.disabled=false;},2000);
+    }
+  }catch(e){ btn.textContent='Error'; btn.disabled=false; }
+}
+
+// Custom slug
+function slugChanged() {
+  document.getElementById('slug-msg').style.display = 'none';
+}
+async function saveCustomSlug() {
+  const inp = document.getElementById('custom-slug-input');
+  const btn = document.getElementById('slug-save-btn');
+  const msg = document.getElementById('slug-msg');
+  const val = inp.value.trim();
+  btn.textContent = 'Guardando...'; btn.disabled = true;
+  try {
+    const r = await fetch(`/portfolio/${pid}/custom-slug`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({slug: val})
+    });
+    const d = await r.json();
+    msg.style.display = 'block';
+    if (d.ok) {
+      msg.style.color = 'var(--violet)';
+      msg.textContent = `✓ URL guardada: portify.es/p/${d.slug}`;
+    } else {
+      msg.style.color = '#e06a7c';
+      msg.textContent = d.error || 'Error al guardar';
+    }
+  } catch(e) {
+    msg.style.color = '#e06a7c'; msg.textContent = 'Error de conexión'; msg.style.display = 'block';
+  }
+  btn.textContent = 'Guardar'; btn.disabled = false;
+}
+
+// Stats modal
+async function openStats() {
+  const r = await fetch(`/portfolio/${pid}/stats`);
+  const d = await r.json();
+  if (d.error) { alert(d.error); return; }
+
+  const total = d.total || 0;
+  const daily = d.daily || [];
+  const devices = d.devices || [];
+  const refs = d.refs || [];
+  const msgs = d.unread_msgs || 0;
+
+  // Build SVG bar chart (last 30 days)
+  const maxCnt = Math.max(1, ...daily.map(x => x.cnt));
+  const barW = 8, barGap = 3, chartH = 60;
+  let bars = '';
+  daily.slice(-28).forEach((row, i) => {
+    const h = Math.max(3, Math.round((row.cnt / maxCnt) * chartH));
+    bars += `<rect x="${i*(barW+barGap)}" y="${chartH-h}" width="${barW}" height="${h}" rx="2" fill="var(--violet)" opacity=".8">
+      <title>${row.fecha}: ${row.cnt} visitas</title></rect>`;
+  });
+  const chartW = 28 * (barW + barGap);
+  const chartSvg = `<svg width="${chartW}" height="${chartH}" style="overflow:visible">${bars}</svg>`;
+
+  // Device breakdown
+  const devHtml = devices.map(d => {
+    const icon = d.type === 'mobile' ? '📱' : '🖥';
+    return `<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--border);font-size:.78rem">${icon} ${d.type}: <strong>${d.cnt}</strong></span>`;
+  }).join('');
+
+  // Top referrers
+  const refHtml = refs.length ? refs.map(r => {
+    const domain = r.ref.replace(/^https?:\/\//, '').split('/')[0] || 'Directo';
+    return `<div style="display:flex;justify-content:space-between;font-size:.78rem;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${domain}</span><strong>${r.cnt}</strong></div>`;
+  }).join('') : '<p style="font-size:.78rem;color:var(--text3)">Sin datos aún</p>';
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:28px;width:min(520px,100%);max-height:80vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h3 style="font-size:1rem;font-weight:700">📊 Analytics · ${d.titulo}</h3>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr ${msgs > 0 ? '1fr' : ''};gap:12px;margin-bottom:20px">
+        <div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--violet)">${total}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Visitas</div>
+        </div>
+        <div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:var(--violet)">${daily.reduce((a,b)=>a+b.cnt,0)}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Últimos 30d</div>
+        </div>
+        ${msgs > 0 ? `<div style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center">
+          <div style="font-size:1.6rem;font-weight:800;color:#e06a7c">${msgs}</div>
+          <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Mensajes nuevos</div>
+        </div>` : ''}
+      </div>
+      <div style="margin-bottom:20px">
+        <p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Visitas últimos 28 días</p>
+        ${chartSvg}
+      </div>
+      ${devHtml ? `<div style="margin-bottom:20px"><p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Dispositivos</p><div style="display:flex;gap:8px;flex-wrap:wrap">${devHtml}</div></div>` : ''}
+      <div><p style="font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Top orígenes</p>${refHtml}</div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+// Historial de versiones
+async function openVersiones() {
+  const r = await fetch(`/portfolio/${pid}/versiones`);
+  const vers = await r.json();
+  const listHtml = vers.length
+    ? vers.map(v => {
+        const d = new Date(v.fecha);
+        const label = d.toLocaleString('es-ES', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:.82rem;color:var(--text2)">🕘 ${label}</span>
+          <button onclick="restaurarVersion(${v.id},this)" style="padding:5px 12px;border-radius:7px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.75rem;cursor:pointer">Restaurar</button>
+        </div>`;
+      }).join('')
+    : '<p style="font-size:.82rem;color:var(--text3);padding:12px 0">Aún no hay versiones guardadas.<br>Se guardan automáticamente cada vez que publicas cambios.</p>';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:28px;width:min(420px,100%);max-height:70vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h3 style="font-size:1rem;font-weight:700">🕘 Historial de versiones</h3>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer">✕</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--text3);margin-bottom:12px">Se guardan las últimas 10 versiones. Restaurar una versión guarda la actual.</p>
+      <div id="ver-list">${listHtml}</div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+}
+
+async function restaurarVersion(vid, btn) {
+  if (!confirm('¿Restaurar esta versión? La versión actual se guardará en el historial.')) return;
+  btn.textContent = 'Restaurando...'; btn.disabled = true;
+  const r = await fetch(`/portfolio/${pid}/versiones/${vid}/restaurar`, {method:'POST'});
+  const d = await r.json();
+  if (d.ok) {
+    location.reload();
+  } else {
+    btn.textContent = 'Error'; btn.disabled = false;
+  }
+}
+
+// Init
+renderSkills();
+renderProjects();
+updatePreview();
+</script>
+</body>
+</html>

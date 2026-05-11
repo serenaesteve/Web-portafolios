@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Portify — Tu portfolio creado por IA</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -12,8 +12,9 @@
     <a href="/" class="logo">Portify</a>
     <nav class="menu">
       <a href="#como-funciona">Cómo funciona</a>
-      <a href="#demos">Demos</a>
-      <a href="#planes">Planes</a>
+      <a href="#plantillas">Plantillas</a>
+      <a href="#precios">Precios</a>
+      <a href="/descubrir">Descubrir</a>
     </nav>
     <div class="nav-actions">
       <a href="/login"    class="btn btn-ghost">Entrar</a>
@@ -24,49 +25,61 @@
 
 <main>
 
-  <!-- HERO -->
+  <!-- ── HERO ── -->
   <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+    </div>
     <div class="wrapper hero-grid">
-      <div class="hero-text reveal">
-        <span class="section-tag">IA local · Ollama · Sin datos a terceros</span>
-        <h1>Tu portfolio,<br><span>creado por IA</span><br>en minutos</h1>
-        <p class="hero-description">
-          Solo tienes que hablar. La IA te hace preguntas y genera tu web profesional automáticamente.
-          Sin tecnicismos, sin diseño, sin código.
-        </p>
-        <div class="hero-buttons">
-          <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio gratis</a>
-          <a href="#demos"    class="btn btn-secondary btn-large">Ver ejemplos</a>
+      <div class="reveal">
+        <div class="hero-eyebrow">
+          <span class="badge badge-grad badge-dot">IA local · Ollama · Sin datos a terceros</span>
+        </div>
+        <h1 class="hero-title">Tu portfolio,<br><em>creado por IA</em><br>en minutos</h1>
+        <p class="hero-sub">Solo tienes que hablar. Nuestra IA te hace preguntas en lenguaje natural y genera automáticamente tu web profesional. Sin tecnicismos, sin código.</p>
+        <div class="hero-cta">
+          <a href="/registro" class="btn btn-primary btn-lg">Crear mi portfolio gratis</a>
+          <a href="#como-funciona" class="btn btn-ghost btn-lg">Ver cómo funciona</a>
         </div>
         <div class="hero-proof">
-          <div class="proof-item"><strong>100% local</strong><span>Tus datos no salen de tu máquina</span></div>
-          <div class="proof-item"><strong>HTML listo</strong><span>Descarga y publica donde quieras</span></div>
+          <div class="proof-stat"><strong>15</strong><span>Plantillas únicas</span></div>
+          <div class="proof-stat"><strong>100%</strong><span>Local y privado</span></div>
+          <div class="proof-stat"><strong>∞</strong><span>Posibilidades</span></div>
         </div>
       </div>
 
-      <div class="hero-visual reveal delay-1">
-        <div class="floating-prompt">
-          <span>Chat IA</span>
-          <p>¿Cómo imaginas el estilo de tu portfolio? ¿Algo oscuro y tecnológico, o claro y minimalista? 🎨</p>
+      <div class="reveal delay-1">
+        <div class="chat-bubble-preview" style="margin-bottom:10px">
+          <div class="cbp-label">Portify IA</div>
+          <div class="cbp-text">¡Hola! Voy a ayudarte a crear tu portfolio. ¿Empezamos? ¿Cómo te llamas? 😊</div>
         </div>
-        <div class="product-window">
-          <div class="window-bar"><i></i><i></i><i></i></div>
-          <div class="product-content">
-            <div class="product-left">
-              <span class="badge-live">Portfolio generado</span>
-              <h3>Alex M.</h3>
-              <p style="color:var(--muted);font-size:.82rem">Frontend Developer</p>
-              <div class="mock-lines"><div></div><div class="short"></div></div>
-              <div class="mock-buttons">
-                <button>Proyectos</button>
-                <button class="alt">Contacto</button>
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-url">portify.app/p/alex-martin</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mock-left">
+              <div class="mock-tag">Portfolio generado ✦</div>
+              <div class="mock-name">Alex Martín</div>
+              <div class="mock-role" style="color:var(--violet)">Frontend Developer</div>
+              <div class="mock-lines">
+                <div class="mock-line"></div>
+                <div class="mock-line short"></div>
+              </div>
+              <div class="mock-btns">
+                <button class="mock-btn mock-btn-p">Proyectos</button>
+                <button class="mock-btn mock-btn-s">Contacto</button>
               </div>
             </div>
-            <div class="product-right">
-              <div class="preview-card big"></div>
-              <div class="preview-row">
-                <div class="preview-card small"></div>
-                <div class="preview-card small light"></div>
+            <div class="mock-right">
+              <div class="mock-card"></div>
+              <div class="mock-row">
+                <div class="mock-card-sm"></div>
+                <div class="mock-card-sm"></div>
               </div>
             </div>
           </div>
@@ -75,164 +88,312 @@
     </div>
   </section>
 
-  <!-- TRUSTED -->
-  <div class="trusted-bar">
-    <div class="wrapper trusted-row">
-      <span>Conversacional</span>
-      <span>IA con Ollama</span>
-      <span>HTML descargable</span>
-      <span>Privacidad total</span>
-      <span>Sin código</span>
+  <!-- ── TICKER ── -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot"></span>Chat conversacional</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>IA con Ollama</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>5 plantillas únicas</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Preview en tiempo real</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Link público instantáneo</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>100% privado</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Descarga HTML</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Sin código</span>
+      <!-- duplicado para loop -->
+      <span class="ticker-item"><span class="ticker-dot"></span>Chat conversacional</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>IA con Ollama</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>5 plantillas únicas</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Preview en tiempo real</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Link público instantáneo</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>100% privado</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Descarga HTML</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Sin código</span>
     </div>
   </div>
 
-  <!-- CÓMO FUNCIONA -->
-  <section class="how-section" id="como-funciona">
+  <!-- ── CÓMO FUNCIONA ── -->
+  <section class="section" id="como-funciona">
     <div class="wrapper">
-      <div class="section-heading reveal">
-        <span class="section-tag">Cómo funciona</span>
-        <h2>Tres pasos, un portfolio profesional</h2>
-        <p>No necesitas saber diseño ni programación. Solo responder a preguntas en tu idioma.</p>
+      <div class="section-header reveal">
+        <span class="badge badge-grad">Cómo funciona</span>
+        <h2 class="section-title">Tres pasos,<br><em>un portfolio profesional</em></h2>
+        <p class="section-sub">No necesitas saber nada de diseño ni programación. Solo responde a preguntas naturales.</p>
       </div>
       <div class="steps-grid">
-        <article class="step-card reveal">
-          <div class="step-index">01</div>
+        <div class="card step-card card-hover reveal">
+          <div class="step-num">01</div>
           <h3>Cuéntanos quién eres</h3>
-          <p>La IA te hace preguntas sencillas sobre ti, tu trabajo y cómo quieres que luzca tu portfolio. Sin tecnicismos.</p>
-        </article>
-        <article class="step-card reveal delay-1">
-          <div class="step-index">02</div>
-          <h3>La IA lo construye</h3>
-          <p>Con tus respuestas, Portify genera automáticamente una web completa, diseñada y lista para impresionar.</p>
-        </article>
-        <article class="step-card reveal delay-2">
-          <div class="step-index">03</div>
-          <h3>Descarga y publica</h3>
-          <p>Obtén tu portfolio en HTML. Súbelo a GitHub Pages, Netlify o cualquier hosting en segundos.</p>
-        </article>
+          <p>La IA te hace preguntas sencillas y naturales. Sin formularios, sin tecnicismos. Solo una conversación.</p>
+        </div>
+        <div class="card step-card card-hover reveal delay-1">
+          <div class="step-num">02</div>
+          <h3>Ve cómo se construye</h3>
+          <p>En tiempo real, a la derecha del chat, tu portfolio toma forma. Puedes cambiar la plantilla al instante.</p>
+        </div>
+        <div class="card step-card card-hover reveal delay-2">
+          <div class="step-num">03</div>
+          <h3>Comparte tu link</h3>
+          <p>Obtienes una URL única que puedes compartir con cualquiera. También puedes descargar el HTML.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- DEMOS -->
-  <section class="demo-section" id="demos">
+  <!-- ── PLANTILLAS ── -->
+  <section class="section" id="plantillas" style="padding-top:0">
     <div class="wrapper">
-      <div class="section-heading reveal">
-        <span class="section-tag">Estilos</span>
-        <h2>Tu estilo, tu identidad</h2>
-        <p>Elige entre tres estéticas distintas o déjate llevar por la IA. Siempre moderno, siempre profesional.</p>
+      <div class="section-header reveal">
+        <span class="badge badge-grad">Plantillas</span>
+        <h2 class="section-title">15 estéticas,<br><em>un mismo tú</em></h2>
+        <p class="section-sub">Cada plantilla tiene tipografía, colores y personalidad radicalmente distintos. Cambia de estilo en un clic.</p>
       </div>
-      <div class="demo-grid">
-        <article class="demo-card reveal">
-          <div class="demo-preview preview-light"></div>
-          <h3>Minimalista claro</h3>
-          <p>Limpio, ordenado y centrado en el contenido. Para profesionales que prefieren dejar hablar al trabajo.</p>
-        </article>
-        <article class="demo-card featured reveal delay-1">
-          <div class="demo-preview preview-dark"></div>
-          <h3>Oscuro y moderno</h3>
-          <p>Impacto visual, contraste máximo y estética de producto tech. El favorito de developers y diseñadores.</p>
-        </article>
-        <article class="demo-card reveal delay-2">
-          <div class="demo-preview preview-creative"></div>
-          <h3>Creativo</h3>
-          <p>Personalidad, color y presencia propia. Para quienes quieren destacar y no pasar desapercibidos.</p>
-        </article>
+      <div class="tpl-grid-15 reveal">
+
+        <!-- OSCURO -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#080810,#14142a)">
+            <div class="tpl-mini" style="background:#111118;border:1px solid rgba(255,255,255,.08)">
+              <div class="tpl-mini-bar" style="background:#0a0a0f"><div class="tpl-mini-dot" style="background:#ff5f57"></div><div class="tpl-mini-dot" style="background:#febc2e"></div><div class="tpl-mini-dot" style="background:#28c840"></div></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#8b7eff;width:52%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.08);width:80%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.05);width:60%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🖤 Oscuro</h4><p>Tech, elegante</p></div>
+        </div>
+
+        <!-- MINIMALISTA -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#fafaf8,#ede9e4)">
+            <div class="tpl-mini" style="background:#fafaf8;border:1px solid rgba(0,0,0,.08)">
+              <div class="tpl-mini-bar" style="background:#f0ede8;border-bottom:1px solid rgba(0,0,0,.06)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#1a1a1a;width:70%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.08);width:90%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.05);width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>⚪ Minimalista</h4><p>Limpio, editorial</p></div>
+        </div>
+
+        <!-- CREATIVO -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#fff,#f4f4f4)">
+            <div class="tpl-mini" style="background:#fff;border:1px solid rgba(0,0,0,.1)">
+              <div class="tpl-mini-bar" style="background:#fff;border-bottom:3px solid #111"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#111;width:65%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.06);width:85%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.04);width:50%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🎨 Creativo</h4><p>Bold, personalidad</p></div>
+        </div>
+
+        <!-- EDITORIAL -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#f5f0e8,#e8dfc8)">
+            <div class="tpl-mini" style="background:#f5f0e8;border:1px solid rgba(0,0,0,.08)">
+              <div class="tpl-mini-bar" style="background:#f5f0e8;border-bottom:2px solid #1a1208"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#1a1208;width:75%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.07);width:90%"></div><div class="tpl-mini-line" style="background:rgba(0,0,0,.05);width:60%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>📰 Editorial</h4><p>Estilo revista</p></div>
+        </div>
+
+        <!-- ORGÁNICO -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#fdf6ee,#f0e4d0)">
+            <div class="tpl-mini" style="background:#fdf6ee;border:1px solid rgba(180,120,60,.15)">
+              <div class="tpl-mini-bar" style="background:#fdf6ee;border-bottom:1px solid rgba(180,120,60,.12)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#2c1810;width:70%"></div><div class="tpl-mini-line" style="background:rgba(180,120,60,.15);width:85%"></div><div class="tpl-mini-line" style="background:rgba(180,120,60,.08);width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🌿 Orgánico</h4><p>Cálido, natural</p></div>
+        </div>
+
+        <!-- GLASSMORPHISM -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#0f0c29,#302b63)">
+            <div class="tpl-mini" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px)">
+              <div class="tpl-mini-bar" style="background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.08)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:rgba(255,255,255,.5);width:60%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.12);width:80%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.08);width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🔮 Glassmorphism</h4><p>Cristal, profundidad</p></div>
+        </div>
+
+        <!-- NEOBRUTALISM -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:#fff">
+            <div class="tpl-mini" style="background:#fff;border:3px solid #000">
+              <div class="tpl-mini-bar" style="background:#fff;border-bottom:3px solid #000"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#000;width:72%;height:5px"></div><div class="tpl-mini-line" style="background:#000;width:88%;height:3px;opacity:.15"></div><div class="tpl-mini-line" style="background:#000;width:55%;height:3px;opacity:.1"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>⬛ Neobrutalism</h4><p>Raw, bold, brutal</p></div>
+        </div>
+
+        <!-- TERMINAL -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:#0d1117">
+            <div class="tpl-mini" style="background:#161b22;border:1px solid rgba(0,255,65,.3)">
+              <div class="tpl-mini-bar" style="background:#0d1117;border-bottom:1px solid rgba(0,255,65,.2)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#00ff41;width:55%"></div><div class="tpl-mini-line" style="background:rgba(0,255,65,.2);width:80%"></div><div class="tpl-mini-line" style="background:rgba(0,255,65,.12);width:60%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>💻 Terminal</h4><p>Código, monoespaciado</p></div>
+        </div>
+
+        <!-- LUXURY -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#09080c,#15110a)">
+            <div class="tpl-mini" style="background:#110f17;border:1px solid rgba(201,168,76,.22)">
+              <div class="tpl-mini-bar" style="background:#09080c;border-bottom:1px solid rgba(201,168,76,.12)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#c9a84c;width:58%"></div><div class="tpl-mini-line" style="background:rgba(201,168,76,.15);width:82%"></div><div class="tpl-mini-line" style="background:rgba(201,168,76,.08);width:62%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>✨ Luxury</h4><p>Dorado, premium</p></div>
+        </div>
+
+        <!-- RETRO -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#fef3d0,#f5e0a8)">
+            <div class="tpl-mini" style="background:#fff8e7;border:1px solid #d4a24e">
+              <div class="tpl-mini-bar" style="background:#2d1b00;border-bottom:2px solid #d4a24e"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#2d1b00;width:66%"></div><div class="tpl-mini-line" style="background:rgba(45,27,0,.12);width:85%"></div><div class="tpl-mini-line" style="background:rgba(45,27,0,.08);width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>📼 Retro</h4><p>Vintage, cálido</p></div>
+        </div>
+
+        <!-- NORDIC -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:#fff">
+            <div class="tpl-mini" style="background:#fff;border:1px solid #e5e5e5">
+              <div class="tpl-mini-bar" style="background:#fff;border-bottom:1px solid #e5e5e5"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#1a1a1a;width:68%;height:4px"></div><div class="tpl-mini-line" style="background:#e5e5e5;width:88%"></div><div class="tpl-mini-line" style="background:#e5e5e5;width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>❄️ Nordic</h4><p>Escandinavo, puro</p></div>
+        </div>
+
+        <!-- PASTEL -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#fff5f9,#fde8f4)">
+            <div class="tpl-mini" style="background:#fff;border:1px solid #f0d4e8;border-radius:12px">
+              <div class="tpl-mini-bar" style="background:#fff;border-bottom:1px solid #f0d4e8"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#3d2a3a;width:62%"></div><div class="tpl-mini-line" style="background:#f0d4e8;width:85%"></div><div class="tpl-mini-line" style="background:#f0d4e8;width:50%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🌸 Pastel</h4><p>Suave, redondeado</p></div>
+        </div>
+
+        <!-- NEON -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(160deg,#08001a,#120030)">
+            <div class="tpl-mini" style="background:#0d0028;border:1px solid rgba(0,238,255,.2)">
+              <div class="tpl-mini-bar" style="background:#08001a;border-bottom:1px solid rgba(0,238,255,.15)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#00eeff;width:58%;box-shadow:0 0 6px #00eeff66"></div><div class="tpl-mini-line" style="background:rgba(0,238,255,.15);width:82%"></div><div class="tpl-mini-line" style="background:rgba(0,238,255,.08);width:60%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>⚡ Neon</h4><p>Ciberpunk, brillante</p></div>
+        </div>
+
+        <!-- MAGAZINE -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:#fff">
+            <div class="tpl-mini" style="background:#fff;border:1px solid #ddd">
+              <div class="tpl-mini-bar" style="background:#fff;border-bottom:4px double #1a1a1a"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#1a1a1a;width:78%;height:5px"></div><div class="tpl-mini-line" style="background:#ddd;width:92%"></div><div class="tpl-mini-line" style="background:#ddd;width:62%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🗞️ Magazine</h4><p>Periódico, tipografía</p></div>
+        </div>
+
+        <!-- GRADIENT -->
+        <div class="card tpl-card">
+          <div class="tpl-preview" style="background:linear-gradient(135deg,#4f46e5,#7c3aed,#db2777,#f59e0b)">
+            <div class="tpl-mini" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px)">
+              <div class="tpl-mini-bar" style="background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.15)"></div>
+              <div class="tpl-mini-body"><div class="tpl-mini-line" style="background:#fff;width:62%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.25);width:82%"></div><div class="tpl-mini-line" style="background:rgba(255,255,255,.15);width:55%"></div></div>
+            </div>
+          </div>
+          <div class="tpl-label"><h4>🌈 Gradient</h4><p>Vibrante, colorido</p></div>
+        </div>
+
       </div>
     </div>
   </section>
+  <style>
+  .tpl-grid-15 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .tpl-grid-15 .tpl-preview { height: 120px; }
+  .tpl-grid-15 .tpl-label h4 { font-size: .78rem; }
+  .tpl-grid-15 .tpl-label p  { font-size: .68rem; }
+  @media(max-width:900px)  { .tpl-grid-15 { grid-template-columns: repeat(3,1fr); } }
+  @media(max-width:560px)  { .tpl-grid-15 { grid-template-columns: repeat(2,1fr); } }
+  </style>
 
-  <!-- BENEFITS -->
-  <section class="benefits-section">
-    <div class="wrapper benefits-grid">
-      <div class="benefits-copy reveal">
-        <span class="section-tag">Por qué Portify</span>
-        <h2>Diseñado para quien no tiene tiempo que perder</h2>
-        <p>Montar un portfolio desde cero puede llevar días. Con Portify lo tienes en minutos, con calidad de producto real.</p>
-      </div>
-      <div class="benefits-list">
-        <article class="benefit-card reveal" style="padding:22px">
-          <h3>Conversacional</h3>
-          <p>Sin formularios. La IA pregunta, tú respondes.</p>
-        </article>
-        <article class="benefit-card reveal delay-1" style="padding:22px">
-          <h3>Responsive</h3>
-          <p>Funciona en móvil, tablet y escritorio.</p>
-        </article>
-        <article class="benefit-card reveal delay-2" style="padding:22px">
-          <h3>IA privada</h3>
-          <p>Ollama corre en tu máquina. Cero cloud.</p>
-        </article>
-        <article class="benefit-card reveal delay-3" style="padding:22px">
-          <h3>Escalable</h3>
-          <p>Base sólida para seguir personalizando.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- PLANES -->
-  <section class="pricing-section" id="planes">
+  <!-- ── PRECIOS ── -->
+  <section class="section" id="precios">
     <div class="wrapper">
-      <div class="section-heading reveal">
-        <span class="section-tag">Planes</span>
-        <h2>Empieza gratis, escala cuando quieras</h2>
-        <p>Sin tarjeta de crédito para empezar. Actualiza cuando necesites más.</p>
+      <div class="section-header reveal">
+        <span class="badge badge-grad">Precios</span>
+        <h2 class="section-title">Empieza gratis,<br><em>crece cuando quieras</em></h2>
       </div>
       <div class="pricing-grid">
-        <article class="price-card reveal">
-          <h3>Free</h3>
-          <div class="price">0€</div>
-          <p class="price-sub">Para empezar</p>
-          <ul>
+        <div class="card price-card reveal">
+          <div class="price-label">Free</div>
+          <div class="price-amount">0€</div>
+          <div class="price-period">Para siempre</div>
+          <ul class="price-features">
             <li>1 portfolio</li>
+            <li>15 plantillas</li>
+            <li>Subdominio incluido</li>
             <li>Descarga HTML</li>
-            <li>3 estilos</li>
             <li>IA conversacional</li>
           </ul>
-          <a href="/registro" class="btn btn-secondary full-btn">Empezar gratis</a>
-        </article>
-
-        <article class="price-card featured-price reveal delay-1">
-          <span class="price-badge">Más popular</span>
-          <h3>Pro</h3>
-          <div class="price">9€</div>
-          <p class="price-sub">Para destacar</p>
-          <ul>
+          <a href="/registro" class="btn btn-secondary full">Empezar gratis</a>
+        </div>
+        <div class="card price-card featured reveal delay-1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div class="price-label" style="margin:0">Pro</div>
+            <span class="badge badge-grad" style="font-size:.65rem">Más popular</span>
+          </div>
+          <div class="price-amount">9€</div>
+          <div class="price-period">al mes</div>
+          <ul class="price-features">
             <li>5 portfolios</li>
-            <li>Todos los estilos</li>
-            <li>Personalización avanzada</li>
-            <li>Historial de conversaciones</li>
+            <li>5 plantillas</li>
+            <li>Link público personalizado</li>
+            <li>Descarga HTML</li>
+            <li>IA conversacional avanzada</li>
           </ul>
-          <a href="/registro" class="btn btn-primary full-btn">Elegir Pro</a>
-        </article>
-
-        <article class="price-card reveal delay-2">
-          <h3>Premium</h3>
-          <div class="price">19€</div>
-          <p class="price-sub">Sin límites</p>
-          <ul>
+          <a href="/registro" class="btn btn-primary full">Elegir Pro</a>
+        </div>
+        <div class="card price-card reveal delay-2">
+          <div class="price-label">Premium</div>
+          <div class="price-amount">19€</div>
+          <div class="price-period">al mes</div>
+          <ul class="price-features">
             <li>Portfolios ilimitados</li>
-            <li>Diseños exclusivos</li>
+            <li>5 plantillas + exclusivas</li>
+            <li>Dominio personalizado</li>
             <li>Exportación avanzada</li>
             <li>Acceso prioritario</li>
           </ul>
-          <a href="/registro" class="btn btn-secondary full-btn">Elegir Premium</a>
-        </article>
+          <a href="/registro" class="btn btn-secondary full">Elegir Premium</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA FINAL -->
-  <section class="final-cta">
+  <!-- ── CTA ── -->
+  <section class="cta-section">
     <div class="wrapper">
       <div class="cta-box reveal">
         <div>
-          <span class="section-tag">Empieza hoy</span>
-          <h2>Tu portfolio profesional empieza con una conversación</h2>
-          <p>Gratis, en minutos, con IA que te entiende.</p>
+          <span class="badge badge-grad">Empieza hoy</span>
+          <h2 class="cta-title">Tu portfolio profesional<br>empieza con una conversación</h2>
+          <p class="cta-sub">Gratis, en minutos, con IA que te entiende.</p>
         </div>
-        <a href="/registro" class="btn btn-primary btn-large">Crear mi portfolio ahora</a>
+        <a href="/registro" class="btn btn-primary btn-lg" style="flex-shrink:0">Crear mi portfolio →</a>
       </div>
     </div>
   </section>
@@ -242,13 +403,13 @@
 <footer class="site-footer">
   <div class="wrapper footer-row">
     <div>
-      <strong class="logo">Portify</strong>
-      <p>Generador de portfolios con IA local.</p>
+      <a href="/" class="logo" style="font-size:1.1rem">Portify</a>
+      <p style="color:var(--text3);font-size:.78rem;margin-top:4px">Generador de portfolios con IA local.</p>
     </div>
     <div class="footer-links">
       <a href="#como-funciona">Cómo funciona</a>
-      <a href="#demos">Demos</a>
-      <a href="#planes">Planes</a>
+      <a href="#plantillas">Plantillas</a>
+      <a href="#precios">Precios</a>
       <a href="/login">Entrar</a>
     </div>
   </div>

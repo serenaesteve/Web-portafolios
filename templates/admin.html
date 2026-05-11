@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 14px; margin-bottom: 28px; }
+    .stat-box  { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+    .stat-box .val { font-size: 2rem; font-weight: 800; color: var(--violet); line-height: 1; }
+    .stat-box .lbl { font-size: .72rem; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th { text-align: left; color: var(--text3); font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    td { padding: 9px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .7rem; font-weight: 600; }
+    .badge-free    { background: var(--surface); border: 1px solid var(--border); color: var(--text3); }
+    .badge-pro     { background: rgba(124,109,250,.15); border: 1px solid rgba(124,109,250,.3); color: var(--violet); }
+    .badge-premium { background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.3); color: #c9a84c; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <span style="color:var(--text3);font-size:.8rem">Panel de administración</span>
+    <div class="nav-actions">
+      <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main style="padding:40px 0;min-height:80vh">
+  <div class="wrapper">
+
+{% if not auth %}
+  <div style="max-width:360px;margin:80px auto">
+    <h1 style="font-size:1.3rem;font-weight:700;margin-bottom:20px;text-align:center">Acceso Admin</h1>
+    {% if error %}<div class="error-msg" style="margin-bottom:16px">{{ error }}</div>{% endif %}
+    <form method="POST" style="display:flex;flex-direction:column;gap:12px">
+      <input type="password" name="pwd" placeholder="Contraseña de administrador"
+             class="ep-input" autofocus>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+  </div>
+
+{% else %}
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <h1 style="font-size:1.4rem;font-weight:700">Panel de administración</h1>
+    <span style="font-size:.78rem;color:var(--text3)">{{ now if now else '' }}</span>
+  </div>
+
+  <!-- KPIs -->
+  <div class="stat-grid">
+    <div class="stat-box"><div class="val">{{ total_users }}</div><div class="lbl">Usuarios</div></div>
+    <div class="stat-box"><div class="val">{{ total_ports }}</div><div class="lbl">Portfolios</div></div>
+    <div class="stat-box"><div class="val">{{ total_visitas }}</div><div class="lbl">Visitas totales</div></div>
+    <div class="stat-box"><div class="val">{{ total_mensajes }}</div><div class="lbl">Mensajes recibidos</div></div>
+    <div class="stat-box"><div class="val">{{ total_pagos }}</div><div class="lbl">Pagos completados</div></div>
+  </div>
+
+  <!-- Planes -->
+  <div class="card" style="padding:20px;margin-bottom:20px">
+    <h3 style="font-size:.88rem;font-weight:700;margin-bottom:14px">Distribución de planes</h3>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      {% for row in planes_dist %}
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge badge-{{ row.plan }}">{{ row.plan }}</span>
+        <strong style="font-size:.95rem">{{ row.cnt }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <!-- Signups últimos 14 días -->
+    <div class="card" style="padding:20px">
+      <h3 style="font-size:.82rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Registros últimos 14 días</h3>
+      {% set max_su = namespace(v=1) %}
+      {% for r in signups %}{% if r.cnt > max_su.v %}{% set max_su.v = r.cnt %}{% endif %}{% endfor %}
+      <svg width="100%" height="60" viewBox="0 0 {{ (signups|length)*16 + 4 }} 60" preserveAspectRatio="none">
+        {% for r in signups %}
+        <rect x="{{ loop.index0 * 16 + 2 }}" y="{{ 60 - [(r.cnt / max_su.v * 54)|int, 4]|max }}"
+              width="12" height="{{ [(r.cnt / max_su.v * 54)|int, 4]|max }}"
+              rx="3" fill="var(--violet)" opacity=".8">
+          <title>{{ r.dia }}: {{ r.cnt }}</title></rect>
+        {% endfor %}
+      </svg>
+    </div>
+    <!-- Visitas últimos 14 días -->
+    <div class="card" style="padding:20px">
+      <h3 style="font-size:.82rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Visitas últimos 14 días</h3>
+      {% set max_v = namespace(v=1) %}
+      {% for r in daily_visits %}{% if r.cnt > max_v.v %}{% set max_v.v = r.cnt %}{% endif %}{% endfor %}
+      <svg width="100%" height="60" viewBox="0 0 {{ (daily_visits|length)*16 + 4 }} 60" preserveAspectRatio="none">
+        {% for r in daily_visits %}
+        <rect x="{{ loop.index0 * 16 + 2 }}" y="{{ 60 - [(r.cnt / max_v.v * 54)|int, 4]|max }}"
+              width="12" height="{{ [(r.cnt / max_v.v * 54)|int, 4]|max }}"
+              rx="3" fill="#f06292" opacity=".8">
+          <title>{{ r.fecha }}: {{ r.cnt }}</title></rect>
+        {% endfor %}
+      </svg>
+    </div>
+  </div>
+
+  <!-- Recent users -->
+  <div class="card" style="padding:20px;margin-bottom:20px;overflow-x:auto">
+    <h3 style="font-size:.88rem;font-weight:700;margin-bottom:14px">Usuarios recientes</h3>
+    <table>
+      <thead><tr><th>Nombre</th><th>Email</th><th>Plan</th><th>Portfolios</th><th>Registro</th></tr></thead>
+      <tbody>
+        {% for u in recent_users %}
+        <tr>
+          <td style="font-weight:500">{{ u.nombre }}</td>
+          <td>{{ u.email }}</td>
+          <td><span class="badge badge-{{ u.plan }}">{{ u.plan }}</span></td>
+          <td style="text-align:center">{{ u.ports }}</td>
+          <td style="color:var(--text3)">{{ u.creado_en[:10] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Recent messages -->
+  {% if recent_msgs %}
+  <div class="card" style="padding:20px;overflow-x:auto">
+    <h3 style="font-size:.88rem;font-weight:700;margin-bottom:14px">Mensajes recientes</h3>
+    <table>
+      <thead><tr><th>De</th><th>Email</th><th>Portfolio</th><th>Mensaje</th><th>Fecha</th></tr></thead>
+      <tbody>
+        {% for m in recent_msgs %}
+        <tr>
+          <td style="font-weight:500;white-space:nowrap">{{ m.nombre }}</td>
+          <td><a href="mailto:{{ m.email }}" style="color:var(--violet)">{{ m.email }}</a></td>
+          <td style="white-space:nowrap">{{ m.titulo }}</td>
+          <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.mensaje }}</td>
+          <td style="color:var(--text3);white-space:nowrap">{{ m.creado_en[:10] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+{% endif %}
+
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Checkout — Plan {{ plan.nombre }} · Portify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .checkout-wrap {
+      min-height: calc(100vh - 60px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 960px;
+      margin: 0 auto;
+      gap: 0;
+    }
+    @media(max-width:700px){ .checkout-wrap{grid-template-columns:1fr} .plan-summary{display:none} }
+
+    /* ── PLAN SUMMARY ── */
+    .plan-summary {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+    }
+    .summary-logo { font-family:'Instrument Serif',serif; font-size:1.3rem; margin-bottom:48px; }
+    .summary-logo span { background:var(--grad-text); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    .plan-tag { font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+    .plan-name { font-family:'Instrument Serif',serif; font-size:2rem; font-weight:400; margin-bottom:4px; }
+    .plan-price { font-size:3rem; font-weight:700; letter-spacing:-.04em; margin-bottom:4px; }
+    .plan-price span { font-size:1rem; font-weight:400; color:var(--text2); }
+    .plan-features { list-style:none; padding:0; margin:28px 0 0; display:flex; flex-direction:column; gap:12px; }
+    .plan-features li { display:flex; align-items:center; gap:10px; font-size:.88rem; color:var(--text2); }
+    .plan-features li::before { content:'✓'; color:var(--violet); font-weight:700; flex-shrink:0; }
+
+    .secure-badge {
+      margin-top:auto;
+      padding-top:32px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:.75rem;
+      color:var(--text3);
+    }
+
+    /* ── PAYMENT FORM ── */
+    .payment-section {
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+    }
+    .payment-section h2 {
+      font-size:1.1rem;
+      font-weight:600;
+      margin-bottom:32px;
+    }
+
+    .form-group { margin-bottom:20px; }
+    .form-label {
+      display:block;
+      font-size:.72rem;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--text2);
+      margin-bottom:8px;
+    }
+    .form-input {
+      width:100%;
+      padding:14px 16px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      color:var(--text);
+      font-size:.95rem;
+      font-family:inherit;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .form-input:focus {
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(124,109,250,.12);
+    }
+    .form-input::placeholder { color:var(--text3); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+    .card-input-wrap { position:relative; }
+    .card-brand {
+      position:absolute;
+      right:14px; top:50%;
+      transform:translateY(-50%);
+      font-size:1.1rem;
+      pointer-events:none;
+    }
+
+    .divider {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:24px 0;
+      color:var(--text3);
+      font-size:.75rem;
+    }
+    .divider::before, .divider::after {
+      content:'';
+      flex:1;
+      height:1px;
+      background:var(--border);
+    }
+
+    .pay-btn {
+      width:100%;
+      padding:16px;
+      border:none;
+      border-radius:var(--r);
+      background:linear-gradient(135deg,#7c6dfa,#f06292);
+      color:#fff;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:all .2s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      box-shadow:0 4px 20px rgba(124,109,250,.3);
+      margin-top:8px;
+    }
+    .pay-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
+    .pay-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+
+    .spinner {
+      width:18px; height:18px;
+      border:2px solid rgba(255,255,255,.3);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin .7s linear infinite;
+      display:none;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    .error-msg {
+      background:rgba(239,68,68,.1);
+      border:1px solid rgba(239,68,68,.3);
+      border-radius:var(--r);
+      padding:12px 16px;
+      color:#fca5a5;
+      font-size:.85rem;
+      margin-bottom:20px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .test-card-hint {
+      margin-top:20px;
+      padding:12px 16px;
+      background:rgba(124,109,250,.06);
+      border:1px solid rgba(124,109,250,.15);
+      border-radius:var(--r-sm);
+      font-size:.75rem;
+      color:var(--text3);
+      line-height:1.7;
+    }
+    .test-card-hint strong { color:var(--text2); }
+
+    .total-line {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 0;
+      border-top:1px solid var(--border);
+      margin-top:4px;
+      margin-bottom:4px;
+    }
+    .total-line .label { font-size:.85rem; color:var(--text2); }
+    .total-line .amount { font-size:1.1rem; font-weight:700; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrapper nav">
+    <a href="/" class="logo">Portify</a>
+    <div class="nav-actions">
+      <a href="/planes" class="btn btn-ghost btn-sm">← Volver a planes</a>
+    </div>
+  </div>
+</header>
+
+<div class="checkout-wrap">
+
+  <!-- RESUMEN DEL PLAN -->
+  <aside class="plan-summary">
+    <div class="summary-logo"><span>Portify</span></div>
+
+    <div class="plan-tag">Estás contratando</div>
+    <div class="plan-name">Plan {{ plan.nombre }}</div>
+    <div class="plan-price">{{ plan.precio }}€ <span>/ mes</span></div>
+
+    <ul class="plan-features">
+      <li>{{ plan.max_portfolios if plan.max_portfolios < 999 else 'Portfolios ilimitados' }}
+          {% if plan.max_portfolios < 999 and plan.max_portfolios > 1 %} portfolios{% endif %}</li>
+      <li>15 plantillas profesionales</li>
+      <li>Subdominio personalizado</li>
+      <li>IA conversacional avanzada</li>
+      <li>Descarga HTML ilimitada</li>
+      <li>Código QR del portfolio</li>
+      {% if plan_id == 'premium' %}
+      <li>Acceso prioritario a novedades</li>
+      <li>Soporte preferente</li>
+      {% endif %}
+      <li>Cancela cuando quieras</li>
+    </ul>
+
+    <div class="secure-badge">
+      🔒 Pago seguro cifrado · SSL 256 bits
+    </div>
+  </aside>
+
+  <!-- FORMULARIO DE PAGO -->
+  <section class="payment-section">
+    <h2>Datos de pago</h2>
+
+    {% if error %}
+    <div class="error-msg">⚠ {{ error }}</div>
+    {% endif %}
+
+    <form id="payForm" method="POST" onsubmit="return procesarPago(event)">
+
+      <div class="form-group">
+        <label class="form-label">Nombre en la tarjeta</label>
+        <input class="form-input" type="text" name="card_name"
+               placeholder="María García" required autocomplete="cc-name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Número de tarjeta</label>
+        <div class="card-input-wrap">
+          <input class="form-input" type="text" name="card_number" id="cardNumber"
+                 placeholder="1234 5678 9012 3456" maxlength="19"
+                 required autocomplete="cc-number"
+                 oninput="formatCard(this)" onkeyup="detectBrand(this)">
+          <span class="card-brand" id="cardBrand">💳</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Caducidad</label>
+          <input class="form-input" type="text" name="card_expiry" id="cardExpiry"
+                 placeholder="MM / AA" maxlength="7"
+                 required autocomplete="cc-exp"
+                 oninput="formatExpiry(this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CVV</label>
+          <input class="form-input" type="text" name="card_cvv"
+                 placeholder="123" maxlength="4"
+                 required autocomplete="cc-csc"
+                 oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+      </div>
+
+      <div class="divider">Resumen del pedido</div>
+
+      <div class="total-line">
+        <span class="label">Plan {{ plan.nombre }} · mensual</span>
+        <span>{{ plan.precio }}.00 €</span>
+      </div>
+      <div class="total-line">
+        <span class="label">IVA (21%)</span>
+        <span>{{ "%.2f"|format(plan.precio * 0.21) }} €</span>
+      </div>
+      <div class="total-line">
+        <span class="label" style="font-weight:600;color:var(--text)">Total hoy</span>
+        <span class="amount">{{ "%.2f"|format(plan.precio * 1.21) }} €</span>
+      </div>
+
+      <button class="pay-btn" type="submit" id="payBtn">
+        <span id="btnText">Pagar {{ "%.2f"|format(plan.precio * 1.21) }} €</span>
+        <div class="spinner" id="btnSpinner"></div>
+      </button>
+
+      <div class="test-card-hint">
+        <strong>🧪 Modo demo</strong> — No se realiza ningún cargo real.<br>
+        Tarjeta de prueba OK: <code style="background:rgba(255,255,255,.06);padding:1px 6px;border-radius:4px">4242 4242 4242 4242</code><br>
+        Tarjeta rechazada: <code style="background:rgba(255,255,255,.06);padding:1px 6px;border-radius:4px">4000 0000 0000 0002</code>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.slice(0,2) + ' / ' + v.slice(2,4);
+  el.value = v;
+}
+function detectBrand(el) {
+  const v = el.value.replace(/\s/g,'');
+  const brands = { '4':'💳 Visa','5':'💳 MC','3':'💳 Amex','6':'💳 Disc' };
+  document.getElementById('cardBrand').textContent = brands[v[0]] || '💳';
+}
+function procesarPago(e) {
+  e.preventDefault();
+  const btn = document.getElementById('payBtn');
+  const txt = document.getElementById('btnText');
+  const spin = document.getElementById('btnSpinner');
+  btn.disabled = true;
+  txt.textContent = 'Procesando...';
+  spin.style.display = 'block';
+  // Pequeño delay para simular procesamiento
+  setTimeout(() => document.getElementById('payForm').submit(), 1800);
+  return false;
+}
+</script>
+</body>
+</html>
